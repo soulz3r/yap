@@ -1,4 +1,6 @@
+#include <direct.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "cli/cli_core.h"
 #include "cli/help.h"
@@ -51,10 +53,37 @@ i32 cli_clean(int argc, char **argv) {
   return 0;
 }
 
-i32 cli_tree(int argc, char **argv){
+i32 cli_tree(int argc, char **argv) {
+  char pwd[_MAX_PATH];
+  const char *path;
+
+  if (argc < 2) {
+    if (_getcwd(pwd, sizeof(pwd)) == NULL) {
+      perror("_getcwd");
+      return 1;
+    }
+
+    path = pwd;
+  } else {
+    path = argv[1];
+  }
+
+  print_tree(path);
+  return 0;
+}
+
+i32 cli_help(int argc, char **argv) {
   // TODO: write what tree command should be
   (void)argc;
-  const char *path = argv[3];
-  print_tree(path);
+  (void)argv;
+  help();
+  return 0;
+}
+
+i32 cli_version(int argc, char **argv) {
+  // TODO: write what tree command should be
+  (void)argc;
+  (void)argv;
+  version();
   return 0;
 }

@@ -8,3 +8,5 @@ i32 cli_check(int argc, char **argv);
 i32 cli_run(int argc, char **argv);
 i32 cli_clean(int argc, char **argv);
 i32 cli_tree(int argc, char **argv);
+i32 cli_help(int argc, char **argv);
+i32 cli_version(int argc, char **argv);

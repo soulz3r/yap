@@ -1,18 +1,14 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "cli/help.h"
 #include "cli/cli_core.h"
+#include "cli/help.h"
 #include "cli/yap_cli.h"
 
 static const struct command commands[] = {
-    {"new", cli_new},
-    {"add", cli_add},
-    {"remove", cli_remove},
-    {"check", cli_check},
-    {"run", cli_run},
-    {"clean", cli_clean},
-    {"tree", cli_tree},
+    {"new", cli_new},     {"add", cli_add},   {"remove", cli_remove},
+    {"check", cli_check}, {"run", cli_run},   {"clean", cli_clean},
+    {"tree", cli_tree},   {"help", cli_help},{"version", cli_version},
 };
 
 i32 yap_cli(int argc, char *argv[]) {
