@@ -10,7 +10,7 @@ includeFlags=(-Iinclude -Isrc)
 
 mkdir -p bin
 
-clang "${cFilenames[@]}" "${includeFlags[@]}" ${compilerFlags:-} -o "./bin/$appName"
+clang -std=c23 "${cFilenames[@]}" "${includeFlags[@]}" ${compilerFlags:-} -o "./bin/$appName"
 
 if [ $? -ne 0 ]; then
     echo

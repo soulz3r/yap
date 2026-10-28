@@ -16,13 +16,6 @@ typedef signed long long i64;
 typedef float f32;
 typedef double f64;
 
-// boolean types
-typedef int b32;
-typedef char b8;
-
-#define TRUE 1
-#define FALSE 0
-
 // platform detection
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)
 #define YAP_PLATFORM_WINDOWS 1

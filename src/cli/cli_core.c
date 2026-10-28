@@ -53,6 +53,7 @@ i32 cli_clean(int argc, char **argv) {
   return 0;
 }
 
+// TODO: add the tree like structure using asci characters
 i32 cli_tree(int argc, char **argv) {
   char pwd[_MAX_PATH];
   const char *path;
