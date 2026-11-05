@@ -1,6 +1,6 @@
+#include <dirent.h>
 #include <stdio.h>
 #include <string.h>
-#include <windows.h>
 
 #include "cli/colors.h"
 #include "cli/help.h"
@@ -43,38 +43,55 @@ void help(void) {
       "Run 'yap help <command>' for command-specific help.\n" YAP_RESET);
 }
 
-void print_tree(const char *path) {
-#if defined(YAP_PLATFORM_WINDOWS)
-  char search_path[MAX_PATH];
-  snprintf(search_path, sizeof(search_path), "%s\\*", path);
-
-  WIN32_FIND_DATAA entry;
-  HANDLE handle = FindFirstFileA(search_path, &entry);
-
-  if (handle == INVALID_HANDLE_VALUE) {
-    printf("Cannot access: %s\n", path);
-    return;
+void print_entry(char *path, bool isdir, int indent) {
+  if (indent == 0 && isdir)
+    printf(YAP_GREEN "%s/\n" YAP_RESET, path);
+  else if (indent > 0 && isdir) {
+    printf("%*c", indent * 4, ' ');
+    printf(YAP_GREEN "%s/\n" YAP_RESET, path);
+  } else if (indent == 0) {
+    printf(YAP_GREY "%s\n" YAP_RESET, path);
+  } else {
+    printf("%*c", indent * 4, ' ');
+    printf(YAP_GREY "%s\n" YAP_RESET, path);
   }
+}
 
-  do {
-    if (strcmp(entry.cFileName, ".") == 0 ||
-        strcmp(entry.cFileName, "..") == 0 ||
-        strcmp(entry.cFileName, ".git") == 0) {
+int list_dir(const char *path, int depth) {
+  DIR *dir = opendir(path);
+  if (!dir) {
+    perror("Cant open dir");
+    --depth;
+    return 1;
+  }
+  struct dirent *dp;
+
+  // read dir entries
+  while ((dp = readdir(dir)) != NULL) {
+    char *name = dp->d_name;
+    if (strcmp(name, ".") == 0 || strcmp(name, "..") == 0 ||
+        strcmp(name, ".git") == 0) {
       continue;
     }
 
-    printf("%s\n", entry.cFileName);
-
-    if (entry.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
-      char child_path[MAX_PATH];
-
-      snprintf(child_path, sizeof(child_path), "%s\\%s", path, entry.cFileName);
-
-      print_tree(child_path);
+    // walk sub dirs
+    bool isdir = dp->d_type == DT_DIR ? true : false;
+    if (isdir) {
+      print_entry(name, 1, depth);
+      size_t len = strlen(path) + strlen(name) + 2;
+      char sub_path[len];
+      snprintf(sub_path, len, "%s/%s", path, name);
+      list_dir(sub_path, depth + 1);
+    } else {
+      print_entry(name, 0, depth);
     }
+  }
+  closedir(dir);
+  return 0;
+}
 
-  } while (FindNextFileA(handle, &entry));
-
-  FindClose(handle);
+void print_tree(const char *path) {
+#if defined(YAP_PLATFORM_LINUX)
+  list_dir(path, 0);
 #endif
 }

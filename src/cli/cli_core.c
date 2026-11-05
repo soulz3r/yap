@@ -1,6 +1,4 @@
-#include <direct.h>
 #include <stdio.h>
-#include <stdlib.h>
 
 #include "cli/cli_core.h"
 #include "cli/help.h"
@@ -53,22 +51,8 @@ i32 cli_clean(int argc, char **argv) {
   return 0;
 }
 
-// TODO: add the tree like structure using asci characters
 i32 cli_tree(int argc, char **argv) {
-  char pwd[_MAX_PATH];
-  const char *path;
-
-  if (argc < 2) {
-    if (_getcwd(pwd, sizeof(pwd)) == NULL) {
-      perror("_getcwd");
-      return 1;
-    }
-
-    path = pwd;
-  } else {
-    path = argv[1];
-  }
-
+  const char *path = "./";
   print_tree(path);
   return 0;
 }
