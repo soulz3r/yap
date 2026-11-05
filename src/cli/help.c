@@ -1,11 +1,8 @@
-#include <dirent.h>
 #include <stdio.h>
-#include <string.h>
 
 #include "cli/colors.h"
 #include "cli/help.h"
-#include "defines.h"
-
+#include "cli/help.h"
 void version() { printf("Version: 0.0.1"); }
 
 void help(void) {
@@ -41,57 +38,4 @@ void help(void) {
 
       YAP_GREY
       "Run 'yap help <command>' for command-specific help.\n" YAP_RESET);
-}
-
-void print_entry(char *path, bool isdir, int indent) {
-  if (indent == 0 && isdir)
-    printf(YAP_GREEN "%s/\n" YAP_RESET, path);
-  else if (indent > 0 && isdir) {
-    printf("%*c", indent * 4, ' ');
-    printf(YAP_GREEN "%s/\n" YAP_RESET, path);
-  } else if (indent == 0) {
-    printf(YAP_GREY "%s\n" YAP_RESET, path);
-  } else {
-    printf("%*c", indent * 4, ' ');
-    printf(YAP_GREY "%s\n" YAP_RESET, path);
-  }
-}
-
-int list_dir(const char *path, int depth) {
-  DIR *dir = opendir(path);
-  if (!dir) {
-    perror("Cant open dir");
-    --depth;
-    return 1;
-  }
-  struct dirent *dp;
-
-  // read dir entries
-  while ((dp = readdir(dir)) != NULL) {
-    char *name = dp->d_name;
-    if (strcmp(name, ".") == 0 || strcmp(name, "..") == 0 ||
-        strcmp(name, ".git") == 0) {
-      continue;
-    }
-
-    // walk sub dirs
-    bool isdir = dp->d_type == DT_DIR ? true : false;
-    if (isdir) {
-      print_entry(name, 1, depth);
-      size_t len = strlen(path) + strlen(name) + 2;
-      char sub_path[len];
-      snprintf(sub_path, len, "%s/%s", path, name);
-      list_dir(sub_path, depth + 1);
-    } else {
-      print_entry(name, 0, depth);
-    }
-  }
-  closedir(dir);
-  return 0;
-}
-
-void print_tree(const char *path) {
-#if defined(YAP_PLATFORM_LINUX)
-  list_dir(path, 0);
-#endif
 }
