@@ -56,3 +56,4 @@ dkms.conf
 bin/
 notes.md
 compile_flags.txt
+docs/

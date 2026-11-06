@@ -1,3 +1,5 @@
+#if defined(YAP_PLATFORM_LINUX)
+
 #include "cli/colors.h"
 #include "cli/tree.h"
 #include "defines.h"
@@ -11,14 +13,12 @@ i32 file_count = 0;
 i32 dir_count = 0;
 
 static void print_entry(const char *path, bool isdir, int depth) {
-  i32 len = depth * sizeof(path);
-  char indent_str[len];
+  for (int i = 0; i < depth; i++) {
+    printf("|   ");
+  }
+
   if (depth > 0) {
-    for (int i = 0; i <= (depth - 1) * 2; i++) {
-      printf("%c", '-');
-    }
-    printf("%c", ' ');
-    printf("%*c", depth * 4, '|');
+    printf("+-- ");
   }
 
   if (isdir) {
@@ -27,7 +27,6 @@ static void print_entry(const char *path, bool isdir, int depth) {
     printf(YAP_GREY "%s\n" YAP_RESET, path);
   }
 }
-
 static void print_count() {
   printf("\nTotal Directories : " YAP_AQUA "%d\n" YAP_RESET
          "Total Files       : " YAP_AQUA "%d\n" YAP_RESET,
@@ -79,3 +78,4 @@ void print_tree(const char *path) {
     print_count();
   }
 }
+#endif /* if defie */

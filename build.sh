@@ -10,8 +10,7 @@ includeFlags=(-Iinclude -Isrc)
 
 mkdir -p bin
 
-clang -std=c23 -DYAP_PLATFORM_LINUX "${cFilenames[@]}" "${includeFlags[@]}" ${compilerFlags:-} -o "./bin/$appName"
-
+clang -g -O0 -Wall -std=c23  -DYAP_PLATFORM_LINUX "${cFilenames[@]}" "${includeFlags[@]}" ${compilerFlags:-} -o "./bin/$appName"
 if [ $? -ne 0 ]; then
     echo
     echo "$appName build failed."

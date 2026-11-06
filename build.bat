@@ -14,8 +14,7 @@ SET "includeFlags=-Iinclude -Isrc"
 
 IF NOT EXIST .\bin MKDIR .\bin
 
-clang -std=c23 -DYAP_PLATFORM_WINDOWS !cFilenames! %compilerFlags% -o .\bin\%appName%.exe %includeFlags%
-
+clang -g -O0 -Wall -std=c23 -DYAP_PLATFORM_WINDOWS !cFilenames! %compilerFlags% -o .\bin\%appName%.exe %includeFlags%
 IF ERRORLEVEL 1 (
     ECHO.
     ECHO %appName% build failed.
