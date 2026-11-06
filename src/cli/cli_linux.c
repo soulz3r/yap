@@ -1,16 +1,24 @@
-#if defined(YAP_PLATFORM_LINUX)
 #include "cli/colors.h"
 #include "cli/tree.h"
+#include "defines.h"
 
+#include <dirent.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
 
-#include <dirent.h>
+i32 file_count = 0;
+i32 dir_count = 0;
 
-static void print_entry(const char *path, bool isdir, int indent) {
-  if (indent > 0) {
-    printf("%*c", indent * 4, ' ');
+static void print_entry(const char *path, bool isdir, int depth) {
+  i32 len = depth * sizeof(path);
+  char indent_str[len];
+  if (depth > 0) {
+    for (int i = 0; i <= (depth - 1) * 2; i++) {
+      printf("%c", '-');
+    }
+    printf("%c", ' ');
+    printf("%*c", depth * 4, '|');
   }
 
   if (isdir) {
@@ -20,12 +28,18 @@ static void print_entry(const char *path, bool isdir, int indent) {
   }
 }
 
+static void print_count() {
+  printf("\nTotal Directories : " YAP_AQUA "%d\n" YAP_RESET
+         "Total Files       : " YAP_AQUA "%d\n" YAP_RESET,
+         dir_count, file_count);
+}
+
 static int list_dir_l(const char *path, int depth) {
   DIR *dir = opendir(path);
 
   if (!dir) {
     perror("Can't open directory");
-    return 1;
+    return 0;
   }
 
   struct dirent *dp;
@@ -41,6 +55,7 @@ static int list_dir_l(const char *path, int depth) {
     bool isdir = dp->d_type == DT_DIR;
 
     if (isdir) {
+      dir_count++;
       print_entry(name, true, depth);
 
       size_t len = strlen(path) + strlen(name) + 2;
@@ -50,14 +65,17 @@ static int list_dir_l(const char *path, int depth) {
 
       list_dir_l(sub_path, depth + 1);
     } else {
+      file_count++;
       print_entry(name, false, depth);
     }
   }
-
   closedir(dir);
-  return 0;
+  return 1;
 }
 
-void print_tree(const char *path) { list_dir_l(path, 0); }
-
-#endif
+void print_tree(const char *path) {
+  i32 is_true = list_dir_l(path, 0);
+  if (is_true) {
+    print_count();
+  }
+}
