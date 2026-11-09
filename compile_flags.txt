@@ -1,0 +1,6 @@
+--std=c23
+-I
+include
+-I
+src
+
