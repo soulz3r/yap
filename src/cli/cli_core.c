@@ -53,7 +53,7 @@ i32 cli_clean(int argc, char **argv) {
 }
 
 i32 cli_tree(int argc, char **argv) {
-  const char *path = "./";
+  const char *path = ".";
   print_tree(path);
   return 0;
 }
