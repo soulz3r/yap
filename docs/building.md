@@ -150,7 +150,7 @@ Windows:
 .\bin\yap.exe tree
 ```
 
-The tree command currently has a Linux implementation only. See [CLI usage](usage.md).
+The tree command is implemented on both Linux and Windows. On Windows, its output temporarily uses the UTF-8 console output code page so the tree connectors render correctly, then restores the previous code page. See [CLI usage](usage.md) for its behavior and platform details.
 
 ## Troubleshooting
 
