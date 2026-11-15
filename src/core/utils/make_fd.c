@@ -13,7 +13,7 @@
 #include <sys/types.h>
 #endif
 
-static FILE *yap_open_file(const char *path, const char *mode) {
+static FILE *yap_open_file(const c *path, const c *mode) {
 #if YAP_PLATFORM_WINDOWS
   FILE *file = NULL;
 
@@ -27,7 +27,7 @@ static FILE *yap_open_file(const char *path, const char *mode) {
 #endif
 }
 
-b create_dir(const char *dir) {
+b create_dir(const c *dir) {
   if (dir == NULL || dir[0] == '\0') {
     return false;
   }
@@ -46,7 +46,7 @@ b create_dir(const char *dir) {
   return true;
 }
 
-b create_file(const char *path) {
+b create_file(const c *path) {
   if (path == NULL || path[0] == '\0') {
     return false;
   }
@@ -65,7 +65,7 @@ b create_file(const char *path) {
   return true;
 }
 
-b write_file(const char *path, const char *content) {
+b write_file(const c *path, const c *content) {
   if (path == NULL || path[0] == '\0' || content == NULL) {
     return false;
   }
@@ -77,7 +77,7 @@ b write_file(const char *path, const char *content) {
   }
 
   const st length = strlen(content);
-  const st written = fwrite(content, sizeof(char), length, file);
+  const st written = fwrite(content, sizeof(c), length, file);
   const i32 close_result = fclose(file);
 
   if (written != length || close_result != 0) {
