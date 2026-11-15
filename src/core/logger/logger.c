@@ -7,6 +7,21 @@
 
 yap_logger_state yap_logger = {0};
 
+/* Use the safer Microsoft CRT function on Windows, while keeping POSIX builds portable. */
+static FILE *yap_log_open_file(const char *path, const char *mode) {
+#if defined(_WIN32)
+    FILE *file = NULL;
+
+    if (fopen_s(&file, path, mode) != 0) {
+        return NULL;
+    }
+
+    return file;
+#else
+    return fopen(path, mode);
+#endif
+}
+
 static bool yap_log_level_valid(yap_log_level level) {
     return level >= YAP_LOG_FATAL && level <= YAP_LOG_TRACE;
 }
@@ -53,7 +68,7 @@ bool yap_log_init(const yap_log_config *config) {
     FILE *file = NULL;
 
     if (config->file_enabled) {
-        file = fopen(config->file_path, "a");
+        file = yap_log_open_file(config->file_path, "a");
         if (file == NULL) {
             return false;
         }
