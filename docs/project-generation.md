@@ -1,16 +1,40 @@
 # Project-generation foundations
 
-This document describes the project-plan executor, template renderer, and the first built-in project template in YAP. The `new` command currently uses the project-plan executor to create the `default` C project. A general template package system is not implemented.
+This document describes the project-creation coordinator, project-plan executor, template renderer, and the first built-in project template in YAP. The `new` command uses the coordinator to select the `default` C template. External template packages are not implemented.
 
 ## Current boundary
 
-The project subsystem currently has three related pieces:
+The project subsystem currently has four related pieces:
 
-1. The project-plan executor performs an ordered list of filesystem operations.
-2. The built-in default template defines the starter C project layout.
-3. The template renderer replaces named variables in caller-provided text, but is not yet used by the default template.
+1. The project-creation coordinator accepts a shared project configuration and selects a built-in template.
+2. The built-in default template defines the starter C project layout and prepares its operation plan.
+3. The project-plan executor performs an ordered list of filesystem operations.
+4. The template renderer replaces named variables in caller-provided text, but is not yet used by the default template.
 
-The built-in `default` template defines a fixed starter layout and is connected to `yap new default <project-name>`. YAP does not yet load external template packages, parse arbitrary project configuration, or automatically convert rendered template files into a project plan.
+The built-in `default` template is connected to `yap new default <project-name>` through a compatibility wrapper. YAP does not yet load external template packages or automatically convert rendered template files into a project plan.
+
+## Project-creation coordinator
+
+The public entry point is:
+
+```c
+YAP_PROJECT_RESULT yap_project_create(const YAP_PROJECT_CONFIG *config);
+```
+
+A configuration contains the project name and the selected template name:
+
+```c
+const YAP_PROJECT_CONFIG config = {
+    .name = "myproject",
+    .template_name = "default",
+};
+
+const YAP_PROJECT_RESULT result = yap_project_create(&config);
+```
+
+The coordinator uses a small built-in template registry. It resolves the requested template and delegates to that template provider. It does not perform filesystem operations. Adding a built-in template means adding a provider and registering it; the plan executor does not need to change.
+
+The existing `yap_project_generate_default(name)` API remains as a convenience wrapper, so the current CLI command does not need to know about the configuration API yet.
 
 ## Project plan
 
