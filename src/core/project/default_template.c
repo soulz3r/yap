@@ -1,4 +1,5 @@
 #include "core/project/project.h"
+#include "core/project/project_create_internal.h"
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -62,7 +63,10 @@ static bool yap_project_name_valid(const char *name) {
   return true;
 }
 
-YAP_PROJECT_RESULT yap_project_generate_default(const char *name) {
+YAP_PROJECT_RESULT yap_project_template_default(
+    const YAP_PROJECT_CONFIG *config) {
+  const char *name = config == NULL ? NULL : config->name;
+
   if (!yap_project_name_valid(name)) {
     return (YAP_PROJECT_RESULT){
         .status = YAP_PROJECT_INVALID_PLAN,
