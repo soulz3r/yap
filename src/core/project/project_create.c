@@ -1,8 +1,9 @@
 #include "core/project/project.h"
 
+#include "defines.h"
+
 #include "core/project/project_create_internal.h"
 
-#include <stddef.h>
 #include <stdint.h>
 #include <string.h>
 
@@ -35,7 +36,7 @@ YAP_PROJECT_RESULT yap_project_create(const YAP_PROJECT_CONFIG *config) {
     return yap_project_create_result(YAP_PROJECT_INVALID_CONFIG);
   }
 
-  for (size_t i = 0; i < sizeof(templates) / sizeof(templates[0]); ++i) {
+  for (st i = 0; i < sizeof(templates) / sizeof(templates[0]); ++i) {
     if (strcmp(config->template_name, templates[i].name) == 0) {
       return templates[i].generate(config);
     }
