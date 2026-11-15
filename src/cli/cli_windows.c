@@ -238,7 +238,7 @@ static void print_count(void) {
          dir_count, file_count);
 }
 
-void print_tree(const char *path) {
+static void print_tree_utf8(const char *path) {
   if (path == NULL || path[0] == '\0') {
     fprintf(stderr, "yap: tree requires a valid directory path\n");
     return;
@@ -266,6 +266,18 @@ void print_tree(const char *path) {
   printf("%s\n", path);
   list_directory(path, 0, last);
   print_count();
+}
+
+void print_tree(const char *path) {
+  const UINT previous_code_page = GetConsoleOutputCP();
+  const bool restore_code_page =
+      previous_code_page != 0 && SetConsoleOutputCP(CP_UTF8) != 0;
+
+  print_tree_utf8(path);
+
+  if (restore_code_page) {
+    SetConsoleOutputCP(previous_code_page);
+  }
 }
 
 #endif
