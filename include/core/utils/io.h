@@ -1,3 +1,5 @@
 #pragma once
 
-void yap_output(char *str);
+#include "defines.h"
+
+v yap_output(c *str);
