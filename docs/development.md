@@ -56,14 +56,14 @@ Keep low-level filesystem operations small and explicit. Current helpers operate
 
 ## C conventions
 
-The project targets C23 and uses integer aliases from `defines.h` in some interfaces.
+The project targets C23 and uses the shared aliases from `include/defines.h` throughout its C interfaces and implementation.
 
 General expectations:
 
 - Include the header that declares a function.
 - Keep public contracts in public headers.
 - Validate pointers and sizes at API boundaries.
-- Use `size_t` for object sizes and array counts.
+- Use `st` for object sizes, lengths, and array counts.
 - Make ownership and lifetime requirements explicit.
 - Check return values from filesystem and formatted-output operations.
 - Prefer `const` for read-only input.
@@ -78,7 +78,7 @@ Core functions should return enough information for the caller to decide what to
 
 Examples:
 
-- Filesystem helpers return `bool`.
+- Filesystem helpers return `b`.
 - The template renderer returns `YAP_TEMPLATE_STATUS`.
 - The project executor returns `YAP_PROJECT_RESULT`.
 
