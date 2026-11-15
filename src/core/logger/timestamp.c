@@ -1,4 +1,6 @@
 #if !defined(_WIN32)
+
+#include "defines.h"
 #define _POSIX_C_SOURCE 200809L
 #endif
 
@@ -7,7 +9,7 @@
 #include <stdio.h>
 #include <time.h>
 
-bool yap_log_timestamp(char *buffer, size_t capacity) {
+b yap_log_timestamp(char *buffer, st capacity) {
   if (buffer == NULL || capacity == 0) {
     return false;
   }
@@ -36,9 +38,9 @@ bool yap_log_timestamp(char *buffer, size_t capacity) {
   }
 #endif
 
-  const int count =
+  const i32 count =
       snprintf(buffer, capacity, "%02d:%02d:%02d", local_time.tm_hour,
                local_time.tm_min, local_time.tm_sec);
 
-  return count >= 0 && (size_t)count < capacity;
+  return count >= 0 && (st)count < capacity;
 }
