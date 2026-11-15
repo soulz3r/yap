@@ -1,6 +1,7 @@
 #pragma once
 
-#include <stddef.h>
+#include "defines.h"
+
 
 typedef struct YAP_TEMPLATE_VARIABLE {
   const char *name;
@@ -9,7 +10,7 @@ typedef struct YAP_TEMPLATE_VARIABLE {
 
 typedef struct YAP_TEMPLATE_CONTEXT {
   const YAP_TEMPLATE_VARIABLE *variables;
-  size_t variable_count;
+  st variable_count;
 } YAP_TEMPLATE_CONTEXT;
 
 typedef enum YAP_TEMPLATE_STATUS {
@@ -27,5 +28,5 @@ typedef enum YAP_TEMPLATE_STATUS {
  */
 YAP_TEMPLATE_STATUS yap_template_render(const char *source,
                                          const YAP_TEMPLATE_CONTEXT *context,
-                                         char *output, size_t capacity,
-                                         size_t *written);
+                                         char *output, st capacity,
+                                         st *written);
