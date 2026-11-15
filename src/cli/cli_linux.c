@@ -5,30 +5,29 @@
 #include "defines.h"
 
 #include <dirent.h>
-#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
 
-i32 file_count = 0;
-i32 dir_count = 0;
+st file_count = 0;
+st dir_count = 0;
 
-static bool is_directory(const char *path) {
-  struct stat st;
-  return stat(path, &st) == 0 && S_ISDIR(st.st_mode);
+static b is_directory(const char *path) {
+  struct stat info;
+  return stat(path, &info) == 0 && S_ISDIR(info.st_mode);
 }
 
-static int compare_entries(const void *a, const void *b) {
+static i32 compare_entries(const void *a, const void *b) {
   const char *const *x = a;
   const char *const *y = b;
 
   return strcmp(*x, *y);
 }
 
-static void print_entry(const char *name, bool isdir, int depth,
-                        const bool *last, bool is_last) {
-  for (int i = 0; i < depth; i++) {
+static void print_entry(const char *name, b isdir, i32 depth,
+                        const b *last, b is_last) {
+  for (i32 i = 0; i < depth; i++) {
     printf(last[i] ? "    " : YAP_DIM "│   " YAP_RESET);
   }
 
@@ -46,15 +45,15 @@ static void print_count(void) {
          dir_count, file_count);
 }
 
-static void list_dir_l(const char *path, int depth, bool *last) {
+static void list_dir_l(const char *path, i32 depth, b *last) {
   DIR *dir = opendir(path);
 
   if (!dir)
     return;
 
   char **entries = NULL;
-  size_t count = 0;
-  size_t capacity = 0;
+  st count = 0;
+  st capacity = 0;
 
   struct dirent *dp;
 
@@ -66,7 +65,7 @@ static void list_dir_l(const char *path, int depth, bool *last) {
       continue;
 
     if (count == capacity) {
-      size_t new_capacity = capacity ? capacity * 2 : 16;
+      st new_capacity = capacity ? capacity * 2 : 16;
 
       char **tmp = realloc(entries, new_capacity * sizeof(*entries));
 
@@ -89,14 +88,14 @@ static void list_dir_l(const char *path, int depth, bool *last) {
 
   qsort(entries, count, sizeof(*entries), compare_entries);
 
-  for (size_t i = 0; i < count; i++) {
-    size_t len = strlen(path) + strlen(entries[i]) + 2;
+  for (st i = 0; i < count; i++) {
+    st len = strlen(path) + strlen(entries[i]) + 2;
     char sub_path[len];
 
     snprintf(sub_path, len, "%s/%s", path, entries[i]);
 
-    bool isdir = is_directory(sub_path);
-    bool is_last = (i == count - 1);
+    b isdir = is_directory(sub_path);
+    b is_last = (i == count - 1);
 
     print_entry(entries[i], isdir, depth, last, is_last);
 
@@ -119,7 +118,7 @@ void print_tree(const char *path) {
   file_count = 0;
   dir_count = 0;
 
-  bool last[256] = {false};
+  b last[256] = {false};
 
   printf("%s\n", path);
   list_dir_l(path, 0, last);
