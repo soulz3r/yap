@@ -129,7 +129,7 @@ Create a starter C project with:
 yap new default myproject
 ```
 
-This creates a `myproject/` directory containing `include/`, `src/main.c`, `build.sh`, `build.bat`, and `compile_flags.txt`. See [CLI usage](docs/usage.md) for name restrictions and build instructions.
+This creates a `myproject/` directory containing `include/projectname.h`, `src/main.c`, `src/projectname.c`, `build.sh`, `build.bat`, and `compile_flags.txt`. The starter program calls `projectname()`, which prints `Hello from myproject`. See [CLI usage](docs/usage.md) for name restrictions and build instructions.
 
 ## Commands
 
