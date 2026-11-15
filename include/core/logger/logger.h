@@ -1,6 +1,7 @@
 #pragma once
 
-#include <stdbool.h>
+#include "defines.h"
+
 
 /*
  * YAP logging API.
@@ -22,15 +23,15 @@ typedef enum YAP_LOG_LEVEL {
 typedef struct YAP_LOG_CONFIG {
   YAP_LOG_LEVEL min_level;
 
-  bool console_enabled;
-  bool file_enabled;
+  b console_enabled;
+  b file_enabled;
 
   /* Required when file_enabled is true. The file is opened in append mode. */
   const char *file_path;
 
-  bool include_timestamp;
-  bool include_source;
-  bool use_colors;
+  b include_timestamp;
+  b include_source;
+  b use_colors;
 } YAP_LOG_CONFIG;
 
 /* Returns sensible defaults: INFO level, console enabled, file disabled. */
@@ -41,7 +42,7 @@ YAP_LOG_CONFIG yap_log_config_default(void);
  * Returns false for invalid configuration or if an enabled sink cannot open.
  * Initialization is transactional: on failure, no sink remains active.
  */
-bool yap_log_init(const YAP_LOG_CONFIG *config);
+b yap_log_init(const YAP_LOG_CONFIG *config);
 
 /* Flushes and closes owned resources. Safe to call when not initialized. */
 void yap_log_shutdown(void);
@@ -49,10 +50,10 @@ void yap_log_shutdown(void);
 /* Changes the runtime threshold. Returns false if the logger is not initialized
  * or level is outside the YAP_LOG_LEVEL range.
  */
-bool yap_log_set_level(YAP_LOG_LEVEL level);
+b yap_log_set_level(YAP_LOG_LEVEL level);
 
 /* Returns whether a record at this level would pass the current filter. */
-bool yap_log_is_enabled(YAP_LOG_LEVEL level);
+b yap_log_is_enabled(YAP_LOG_LEVEL level);
 
 /*
  * Implementation entry point used by the public macros.
