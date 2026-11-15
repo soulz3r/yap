@@ -11,7 +11,7 @@ typedef YAP_PROJECT_RESULT (*YAP_PROJECT_TEMPLATE_GENERATOR)(
     const YAP_PROJECT_CONFIG *config);
 
 typedef struct YAP_PROJECT_TEMPLATE_ENTRY {
-  const char *name;
+  const c *name;
   YAP_PROJECT_TEMPLATE_GENERATOR generate;
 } YAP_PROJECT_TEMPLATE_ENTRY;
 
@@ -49,7 +49,7 @@ YAP_PROJECT_RESULT yap_project_create(const YAP_PROJECT_CONFIG *config) {
  * Compatibility wrapper for the original default-template API.
  * The CLI can keep using this until it accepts a full project config.
  */
-YAP_PROJECT_RESULT yap_project_generate_default(const char *name) {
+YAP_PROJECT_RESULT yap_project_generate_default(const c *name) {
   const YAP_PROJECT_CONFIG config = {
       .name = name,
       .template_name = "default",
