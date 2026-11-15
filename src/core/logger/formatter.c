@@ -5,8 +5,8 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-static b append(char *buffer, st capacity, st *used,
-                   const char *format, ...) {
+static b append(c *buffer, st capacity, st *used,
+                   const c *format, ...) {
   if (*used >= capacity) {
     return false;
   }
@@ -25,7 +25,7 @@ static b append(char *buffer, st capacity, st *used,
 }
 
 b yap_log_format_record(const YAP_LOG_RECORD *record, b include_timestamp,
-                           b include_source, char *buffer, st capacity,
+                           b include_source, c *buffer, st capacity,
                            st *written) {
   if (record == NULL || buffer == NULL || capacity == 0 || written == NULL) {
     return false;
