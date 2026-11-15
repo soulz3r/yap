@@ -5,7 +5,7 @@
 #include "core/logger/logger.h"
 
 int main(int argc, char **argv) {
-  yap_log_config config = yap_log_config_default();
+  YAP_LOG_CONFIG config = yap_log_config_default();
 
   if (!yap_log_init(&config)) {
     fprintf(stderr, "Failed to initialize YAP logger.\n");
