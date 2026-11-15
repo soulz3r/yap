@@ -2,6 +2,8 @@
 
 #include <stdbool.h>
 #include <stddef.h>
+#include <stdint.h>
+#include <stdio.h>
 #include <string.h>
 
 static bool yap_project_name_valid(const char *name) {
@@ -77,34 +79,48 @@ YAP_PROJECT_RESULT yap_project_generate_default(const char *name) {
       "  return 0;\n"
       "}\n";
 
-  static const char *build_script =
+  char build_script[4096];
+  const int build_script_length = snprintf(
+      build_script, sizeof(build_script),
       "#!/usr/bin/env bash\n"
       "\n"
       "set -eo pipefail\n"
       "\n"
       "mapfile -d '' c_files < <(find src -type f -name '*.c' -print0)\n"
       "\n"
-      "if ((\u0024{#c_files[@]} == 0)); then\n"
+      "if ((${#c_files[@]} == 0)); then\n"
       "  echo \"No C source files found.\" >&2\n"
       "  exit 1\n"
       "fi\n"
       "\n"
       "mkdir -p bin\n"
-      "read -r -a extra_flags <<< \"\u0024{compilerFlags:-}\"\n"
+      "read -r -a extra_flags <<< \"${compilerFlags:-}\"\n"
       "\n"
       "clang -std=c23 -g -O0 -Wall -Wextra \\\n"
       "  -Iinclude -Isrc \\\n"
-      "  \"\u0024{c_files[@]}\" \\\n"
-      "  \"\u0024{extra_flags[@]}\" \\\n"
-      "  -o \"./bin/app\"\n"
+      "  \"${c_files[@]}\" \\\n"
+      "  \"${extra_flags[@]}\" \\\n"
+      "  -o \"./bin/%s\"\n"
       "\n"
-      "echo \"Build succeeded: bin/app\"\n";
+      "echo \"Build succeeded: bin/%s\"\n",
+      name, name);
 
-  static const char *build_batch =
+  if (build_script_length < 0 ||
+      (size_t)build_script_length >= sizeof(build_script)) {
+    return (YAP_PROJECT_RESULT){
+        .status = YAP_PROJECT_PATH_TOO_LONG,
+        .completed_operations = 0,
+        .failed_operation = SIZE_MAX,
+    };
+  }
+
+  char build_batch[4096];
+  const int build_batch_length = snprintf(
+      build_batch, sizeof(build_batch),
       "@ECHO OFF\n"
       "SETLOCAL EnableDelayedExpansion\n"
       "\n"
-      "SET \"appName=app\"\n"
+      "SET \"appName=%s\"\n"
       "SET \"cFiles=\"\n"
       "\n"
       "FOR /R src %%f IN (*.c) DO (\n"
@@ -118,16 +134,26 @@ YAP_PROJECT_RESULT yap_project_generate_default(const char *name) {
       "\n"
       "IF NOT EXIST bin MKDIR bin\n"
       "\n"
-      "ECHO Building %appName%...\n"
-      "clang -std=c23 -g -O0 -Wall -Wextra -Iinclude -Isrc %cFiles% %compilerFlags% -o \"bin\\%appName%.exe\"\n"
+      "ECHO Building %%appName%%...\n"
+      "clang -std=c23 -g -O0 -Wall -Wextra -Iinclude -Isrc %%cFiles%% %%compilerFlags%% -o \"bin\\%%appName%%.exe\"\n"
       "\n"
       "IF ERRORLEVEL 1 (\n"
       "    ECHO Build failed.\n"
       "    EXIT /B 1\n"
       ")\n"
       "\n"
-      "ECHO Build succeeded: bin\\%appName%.exe\n"
-      "EXIT /B 0\n";
+      "ECHO Build succeeded: bin\\%%appName%%.exe\n"
+      "EXIT /B 0\n",
+      name);
+
+  if (build_batch_length < 0 ||
+      (size_t)build_batch_length >= sizeof(build_batch)) {
+    return (YAP_PROJECT_RESULT){
+        .status = YAP_PROJECT_PATH_TOO_LONG,
+        .completed_operations = 0,
+        .failed_operation = SIZE_MAX,
+    };
+  }
 
   static const char *compile_flags =
       "--std=c23\n"
