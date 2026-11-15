@@ -27,15 +27,15 @@ static FILE *yap_open_file(const char *path, const char *mode) {
 #endif
 }
 
-bool create_dir(const char *dir) {
+b create_dir(const char *dir) {
   if (dir == NULL || dir[0] == '\0') {
     return false;
   }
 
 #if YAP_PLATFORM_WINDOWS
-  const int result = _mkdir(dir);
+  const i32 result = _mkdir(dir);
 #else
-  const int result = mkdir(dir, 0755);
+  const i32 result = mkdir(dir, 0755);
 #endif
 
   if (result != 0) {
@@ -46,7 +46,7 @@ bool create_dir(const char *dir) {
   return true;
 }
 
-bool create_file(const char *path) {
+b create_file(const char *path) {
   if (path == NULL || path[0] == '\0') {
     return false;
   }
@@ -65,7 +65,7 @@ bool create_file(const char *path) {
   return true;
 }
 
-bool write_file(const char *path, const char *content) {
+b write_file(const char *path, const char *content) {
   if (path == NULL || path[0] == '\0' || content == NULL) {
     return false;
   }
@@ -76,9 +76,9 @@ bool write_file(const char *path, const char *content) {
     return false;
   }
 
-  const size_t length = strlen(content);
-  const size_t written = fwrite(content, sizeof(char), length, file);
-  const int close_result = fclose(file);
+  const st length = strlen(content);
+  const st written = fwrite(content, sizeof(char), length, file);
+  const i32 close_result = fclose(file);
 
   if (written != length || close_result != 0) {
     YAP_LOG_ERROR("FILESYSTEM", "Failed to write file: %s", path);
