@@ -3,6 +3,7 @@
 #include "core/project/project_create_internal.h"
 
 #include <stddef.h>
+#include <stdint.h>
 #include <string.h>
 
 typedef YAP_PROJECT_RESULT (*YAP_PROJECT_TEMPLATE_GENERATOR)(
