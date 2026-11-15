@@ -33,7 +33,7 @@ The dispatcher currently registers:
 
 | Command | Intended responsibility | Current status |
 |---|---|---|
-| `new` | Create a project | Placeholder |
+| `new` | Create a project from a template | Implemented: `default` template |
 | `add` | Add a project component | Placeholder |
 | `remove` | Remove a project component | Placeholder |
 | `check` | Check project state/configuration | Placeholder |
@@ -43,7 +43,7 @@ The dispatcher currently registers:
 | `help` | Print help | Implemented |
 | `version` | Print version | Implemented |
 
-A command being present in the dispatch table does not mean its feature is ready. Several handlers currently print a placeholder message and return success without performing the intended operation.
+A command being present in the dispatch table does not mean its feature is ready. The `new` command currently supports only the built-in `default` template; the other unfinished handlers remain placeholders.
 
 ## Help
 
@@ -92,15 +92,31 @@ The Windows tree wrapper temporarily calls `SetConsoleOutputCP(CP_UTF8)` when a 
 
 ## New
 
-`new` is intended to become the project-creation command:
+The first implemented project-creation path is the built-in `default` template:
 
-```text
-yap new ...
+```sh
+yap new default myproject
 ```
 
-The current handler is a placeholder. It does not parse project options, select templates, create directories, or write project files.
+This creates a new `myproject/` directory in the current working directory:
 
-The project-plan executor and template renderer described in [Project-generation foundations](project-generation.md) are not connected to this command.
+```text
+myproject/
+├── include/
+├── src/
+│   └── main.c
+├── build.sh
+├── build.bat
+└── compile_flags.txt
+```
+
+The generated starter program prints `Hello, world!`. The build scripts compile C sources under `src/` with Clang in C23 mode and write the executable to `bin/<project-name>` (or `bin/<project-name>.exe` on Windows). The compile flags file supplies the C23 standard and the `include/` and `src/` search paths for clangd.
+
+The project name must be 1-64 characters, begin with a letter or number, and contain only letters, numbers, underscores, or hyphens. Windows reserved device names are rejected. The destination directory must not already exist; YAP does not overwrite an existing project.
+
+The Linux script uses Bash, so run it with `bash build.sh` (or make it executable first). The Windows script can be run with `build.bat` or `./build.bat` from PowerShell.
+
+This command uses the existing project-plan executor with a built-in file layout. It does not yet load external templates or expose template-selection options beyond `default`.
 
 ## Add, remove, check, run, and clean
 
@@ -137,7 +153,7 @@ The CLI returns an integer result:
 - `0` indicates that the handler returned success.
 - A nonzero value indicates that the invocation failed.
 
-Because placeholder handlers currently return zero after printing placeholder text, their exit status does not prove that the intended operation occurred.
+The unfinished placeholder handlers currently return zero after printing placeholder text, so their exit status does not prove that the intended operation occurred.
 
 ## Examples
 
