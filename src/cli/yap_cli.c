@@ -2,6 +2,7 @@
 #include <string.h>
 
 #include "cli/cli_core.h"
+#include "cli/colors.h"
 #include "cli/help.h"
 #include "cli/yap_cli.h"
 #include "core/logger/logger.h"
@@ -44,6 +45,7 @@ i32 yap_cli(int argc, char *argv[]) {
   }
 
   YAP_LOG_WARN("yap", "Unknown command: %s", name);
-  YAP_LOG_INFO("Help", "Run 'yap --help' for usage.");
+  fprintf(stderr, "Run " YAP_GREEN "'yap --help'" YAP_RESET YAP_GREY
+                  " for usage.\n" YAP_RESET);
   return 1;
 }
