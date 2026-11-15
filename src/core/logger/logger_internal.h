@@ -13,13 +13,13 @@
 
 typedef struct YAP_LOG_RECORD {
   YAP_LOG_LEVEL level;
-  const char *module;
-  const char *file;
-  const char *function;
+  const c *module;
+  const c *file;
+  const c *function;
   i32 line;
 
-  char timestamp[YAP_LOG_TIMESTAMP_CAPACITY];
-  char message[YAP_LOG_MESSAGE_CAPACITY];
+  c timestamp[YAP_LOG_TIMESTAMP_CAPACITY];
+  c message[YAP_LOG_MESSAGE_CAPACITY];
 } YAP_LOG_RECORD;
 
 typedef struct YAP_LOG_STATE {
@@ -37,12 +37,12 @@ typedef struct YAP_LOG_STATE {
 
 extern YAP_LOG_STATE yap_logger;
 
-const char *yap_log_level_name(YAP_LOG_LEVEL level);
-b yap_log_timestamp(char *buffer, st capacity);
+const c *yap_log_level_name(YAP_LOG_LEVEL level);
+b yap_log_timestamp(c *buffer, st capacity);
 b yap_log_format_record(const YAP_LOG_RECORD *record,
                            b include_timestamp, b include_source,
-                           char *buffer, st capacity, st *written);
+                           c *buffer, st capacity, st *written);
 
-void yap_log_console_write(const char *line, st length,
+v yap_log_console_write(const c *line, st length,
                            YAP_LOG_LEVEL level, b use_colors);
-void yap_log_file_write(FILE *file, const char *line, st length);
+v yap_log_file_write(FILE *file, const c *line, st length);
