@@ -2,7 +2,6 @@
 
 #include "defines.h"
 
-
 /*
  * YAP logging API.
  *
@@ -60,7 +59,7 @@ b yap_log_is_enabled(YAP_LOG_LEVEL level);
  * Prefer YAP_LOG_* at call sites so source location is captured automatically.
  */
 void yap_log_write(YAP_LOG_LEVEL level, const char *module, const char *file,
-                   int line, const char *function, const char *format, ...);
+                   i32 line, const char *function, const char *format, ...);
 
 /*
  * The format string is the first variadic argument, so calls with or without
