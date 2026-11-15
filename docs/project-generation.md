@@ -137,6 +137,8 @@ The caller owns the arrays and strings for the duration of the call. The API doe
 | `YAP_PROJECT_INVALID_PLAN` | The plan or an operation was invalid |
 | `YAP_PROJECT_PATH_TOO_LONG` | A joined path exceeded the internal path buffer |
 | `YAP_PROJECT_FILESYSTEM_ERROR` | A filesystem operation failed |
+| `YAP_PROJECT_INVALID_CONFIG` | The project configuration or template name is missing |
+| `YAP_PROJECT_UNKNOWN_TEMPLATE` | No registered template matches the requested name |
 
 The result also contains:
 
@@ -166,7 +168,7 @@ Project: {{project.name}}
 Language: {{project.language}}
 ```
 
-The caller supplies a `YAP_TEMPLATE_CONTEXT` containing an array of `YAP_TEMPLATE_VARIABLE` name/value pairs. The renderer writes to a caller-provided output buffer and does not allocate its own buffer.
+The caller supplies a `YAP_TEMPLATE_CONTEXT` containing an array of `YAP_TEMPLATE_VARIABLE` name/value pairs. The renderer writes to a caller-provided output buffer and does not allocate its own buffer. The caller also retains ownership of the project configuration passed to `yap_project_create()`.
 
 ### Example
 
