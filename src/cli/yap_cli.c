@@ -1,4 +1,6 @@
 #include <stdio.h>
+
+#include "defines.h"
 #include <string.h>
 
 #include "cli/cli_core.h"
@@ -13,7 +15,7 @@ static const struct command commands[] = {
     {"tree", cli_tree},   {"help", cli_help}, {"version", cli_version},
 };
 
-i32 yap_cli(int argc, char *argv[]) {
+i32 yap_cli(i32 argc, char *argv[]) {
 
   // quit if no sub-commands
   if (argc < 2) {
@@ -38,7 +40,7 @@ i32 yap_cli(int argc, char *argv[]) {
   }
 
   // dispacher
-  for (size_t i = 0; i < sizeof(commands) / sizeof(commands[0]); i++) {
+  for (st i = 0; i < sizeof(commands) / sizeof(commands[0]); i++) {
     if (strcmp(name, commands[i].name) == 0) {
       return commands[i].cmd_func(argc - 1, argv + 1);
     }
