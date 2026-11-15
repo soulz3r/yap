@@ -1,9 +1,14 @@
 #include "core/utils/make_fd.h"
 #include "core/logger/logger.h"
+#include "defines.h"
 
 #include <stdio.h>
+#include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#if YAP_PLATFORM_WINDOWS
+#include <direct.h>
+#endif
 
 bool create_dir(const char *dir) {
   if (mkdir(dir, 0755) != 0) {
@@ -25,7 +30,11 @@ bool create_file(const char *path) {
     return false;
   }
 
-  fclose(file);
+  if (fclose(file) != 0) {
+    YAP_LOG_ERROR("FILESYSTEM", "Failed to close created file: %s", path);
+    return false;
+  }
+
   return true;
 }
 
@@ -44,7 +53,12 @@ bool write_file(const char *path, const char *content) {
   const size_t length = strlen(content);
   const size_t written = fwrite(content, 1, length, file);
 
-  const bool success = written == length && fclose(file) == 0;
+  const int close_result = fclose(file);
 
-  return success;
+  if (written != length || close_result != 0) {
+    YAP_LOG_ERROR("FILESYSTEM", "Failed to write file: %s", path);
+    return false;
+  }
+
+  return true;
 }
