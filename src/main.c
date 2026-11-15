@@ -5,7 +5,6 @@
 
 int main(int argc, char **argv) {
   yap_log_config config = yap_log_config_default();
-  config.include_source = true;
 
   if (!yap_log_init(&config)) {
     fprintf(stderr, "Failed to initialize YAP logger.\n");
@@ -17,6 +16,7 @@ int main(int argc, char **argv) {
   if (result != 0) {
     YAP_LOG_ERROR("APP", "YAP exited with code %d", result);
   }
+
   yap_log_shutdown();
   return result;
 }
