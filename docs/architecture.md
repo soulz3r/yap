@@ -59,7 +59,7 @@ The dispatch table maps a command string to a function pointer. Each handler rec
 
 The CLI owns command parsing and user-facing terminal output. Reusable core APIs should not print CLI-specific messages.
 
-Shared primitive aliases are defined in `include/defines.h`: `b` for `bool`, `i8`/`i16`/`i32`/`i64` and `u8`/`u16`/`u32`/`u64` for fixed-width integers, `f32`/`f64` for floating-point values, and `st` for `size_t`. Use these aliases consistently in YAP's own interfaces and implementation.
+Shared primitive aliases are defined in `include/defines.h`: `v` for `void`, `c` for `char`, `b` for `bool`, `i8`/`i16`/`i32`/`i64` and `u8`/`u16`/`u32`/`u64` for fixed-width integers, `f32`/`f64` for floating-point values, and `st` for `size_t`. Use these aliases consistently in YAP's own interfaces and implementation.
 
 ## Core layer
 
