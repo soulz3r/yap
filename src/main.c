@@ -1,10 +1,12 @@
 #include <stdio.h>
 
+#include "defines.h"
+
 #include "cli/colors.h"
 #include "cli/yap_cli.h"
 #include "core/logger/logger.h"
 
-int main(int argc, char **argv) {
+i32 main(i32 argc, char **argv) {
   YAP_LOG_CONFIG config = yap_log_config_default();
 
   if (!yap_log_init(&config)) {
@@ -12,7 +14,7 @@ int main(int argc, char **argv) {
     return 1;
   }
 
-  const int result = yap_cli(argc, argv);
+  const i32 result = yap_cli(argc, argv);
 
   if (result != 0) {
     fprintf(stderr, "Run " YAP_BLUE "'yap --help'" YAP_RESET YAP_GREY
