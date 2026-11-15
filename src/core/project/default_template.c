@@ -258,6 +258,7 @@ YAP_PROJECT_RESULT yap_project_generate_default(const char *name) {
           .type = YAP_PROJECT_WRITE_FILE,
           .path = "build.sh",
           .content = build_script,
+          .executable = true,
       },
       {
           .type = YAP_PROJECT_WRITE_FILE,
