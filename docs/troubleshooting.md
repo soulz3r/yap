@@ -50,9 +50,11 @@ The dispatcher currently registers `new`, `add`, `remove`, `check`, `run`, `clea
 
 Several handlers are unfinished. The current `new`, `add`, `remove`, `check`, `run`, and `clean` handlers do not perform their intended operations. See [CLI usage](usage.md#command-status).
 
-### Tree does not show a tree on Windows
+### Tree cannot read a directory on Windows
 
-The Windows implementation is currently a stub. The recursive tree implementation exists in the Linux-specific source file.
+The Windows implementation uses Win32 file enumeration. Check that the current working directory exists and that the process has permission to list it. YAP prints the Windows error code when it cannot open the root or enumerate a directory.
+
+The command does not follow junctions or symbolic-link directories. Those entries are displayed, but their targets are not traversed, which prevents directory cycles.
 
 ## Logger problems
 
