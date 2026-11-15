@@ -9,7 +9,7 @@
 
 YAP_LOG_STATE yap_logger = {0};
 
-static FILE *yap_log_open_file(const char *path, const char *mode) {
+static FILE *yap_log_open_file(const c *path, const c *mode) {
 #if YAP_PLATFORM_WINDOWS
   FILE *file = NULL;
   if (fopen_s(&file, path, mode) != 0) {
@@ -25,7 +25,7 @@ static b yap_log_level_valid(YAP_LOG_LEVEL level) {
   return level >= YAP_LOG_FATAL && level <= YAP_LOG_TRACE;
 }
 
-const char *yap_log_level_name(YAP_LOG_LEVEL level) {
+const c *yap_log_level_name(YAP_LOG_LEVEL level) {
   switch (level) {
     case YAP_LOG_FATAL: return "FATAL";
     case YAP_LOG_ERROR: return "ERROR";
@@ -37,7 +37,7 @@ const char *yap_log_level_name(YAP_LOG_LEVEL level) {
   }
 }
 
-YAP_LOG_CONFIG yap_log_config_default(void) {
+YAP_LOG_CONFIG yap_log_config_default(v) {
   return (YAP_LOG_CONFIG){
       .min_level = YAP_LOG_INFO,
       .console_enabled = true,
@@ -87,10 +87,10 @@ b yap_log_init(const YAP_LOG_CONFIG *config) {
   return true;
 }
 
-void yap_log_shutdown(void) {
+v yap_log_shutdown(v) {
   if (yap_logger.file != NULL) {
-    (void)fflush(yap_logger.file);
-    (void)fclose(yap_logger.file);
+    (v)fflush(yap_logger.file);
+    (v)fclose(yap_logger.file);
   }
 
   yap_logger = (YAP_LOG_STATE){0};
@@ -110,8 +110,8 @@ b yap_log_is_enabled(YAP_LOG_LEVEL level) {
          level <= yap_logger.min_level;
 }
 
-void yap_log_write(YAP_LOG_LEVEL level, const char *module, const char *file,
-                   i32 line, const char *function, const char *format, ...) {
+v yap_log_write(YAP_LOG_LEVEL level, const c *module, const c *file,
+                   i32 line, const c *function, const c *format, ...) {
   if (!yap_log_is_enabled(level) || format == NULL) {
     return;
   }
@@ -126,7 +126,7 @@ void yap_log_write(YAP_LOG_LEVEL level, const char *module, const char *file,
 
   if (yap_logger.include_timestamp &&
       !yap_log_timestamp(record.timestamp, sizeof(record.timestamp))) {
-    (void)snprintf(record.timestamp, sizeof(record.timestamp), "%s",
+    (v)snprintf(record.timestamp, sizeof(record.timestamp), "%s",
                    "unknown-time");
   }
 
@@ -137,16 +137,16 @@ void yap_log_write(YAP_LOG_LEVEL level, const char *module, const char *file,
   va_end(args);
 
   if (message_length < 0) {
-    (void)snprintf(record.message, sizeof(record.message), "%s",
+    (v)snprintf(record.message, sizeof(record.message), "%s",
                    "log message formatting failed");
   } else if ((st)message_length >= sizeof(record.message)) {
-    static const char marker[] = "...[truncated]";
+    static const c marker[] = "...[truncated]";
     const st marker_size = sizeof(marker);
     const st offset = sizeof(record.message) - marker_size;
     memcpy(record.message + offset, marker, marker_size);
   }
 
-  char line_buffer[YAP_LOG_LINE_CAPACITY];
+  c line_buffer[YAP_LOG_LINE_CAPACITY];
   st line_length = 0;
 
   if (!yap_log_format_record(&record, yap_logger.include_timestamp,
@@ -164,7 +164,7 @@ void yap_log_write(YAP_LOG_LEVEL level, const char *module, const char *file,
     yap_log_file_write(yap_logger.file, line_buffer, line_length);
 
     if (ferror(yap_logger.file)) {
-      (void)fclose(yap_logger.file);
+      (v)fclose(yap_logger.file);
       yap_logger.file = NULL;
       yap_logger.file_enabled = false;
     }
