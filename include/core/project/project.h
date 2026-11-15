@@ -40,3 +40,6 @@ typedef struct YAP_PROJECT_RESULT {
  * The caller retains ownership of the plan and all strings it references.
  */
 YAP_PROJECT_RESULT yap_project_generate(const YAP_PROJECT_PLAN *plan);
+
+/* Creates the built-in default C project template in a new directory. */
+YAP_PROJECT_RESULT yap_project_generate_default(const char *name);
