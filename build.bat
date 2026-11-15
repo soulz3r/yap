@@ -1,33 +1,31 @@
-REM Build script for testbed
 @ECHO OFF
-SetLocal EnableDelayedExpansion
+SETLOCAL EnableDelayedExpansion
 
-REM Get a list of all the .c files.
-SET cFilenames=
-FOR /R %%f in (*.c) do (
-    SET cFilenames=!cFilenames! %%f
+SET "appName=yap"
+SET "compiler=clang"
+
+REM Collect all .c files inside src.
+SET "cFilenames="
+FOR /R src %%f IN (*.c) DO (
+    SET "cFilenames=!cFilenames! "%%f""
 )
 
-REM echo "Files:" %cFilenames%
+REM Header search paths.
+SET "includeFlags=-Iinclude -Isrc"
 
-SET assembly=testbed
-SET compilerFlags=-g
-REM -Wall -Werror
+REM Create bin directory if it doesn't exist.
+IF NOT EXIST bin MKDIR bin
 
-SET includeFlags=-Isrc -I../engine/src/
-SET defines=-D_DEBUG
+ECHO Building %appName%...
 
-ECHO "Building %assembly%..."
-clang %cFilenames% %compilerFlags% -o ../bin/%assembly%.exe %defines% %includeFlags% %linkerFlags%
+%compiler% -g -O0 -Wall -std=c23 -DYAP_PLATFORM_WINDOWS %cFilenames% %includeFlags% %compilerFlags% -o "bin\%appName%.exe"
 
 IF ERRORLEVEL 1 (
     ECHO.
-    ECHO Testbed build failed.
+    ECHO %appName% build failed.
     EXIT /B 1
 )
 
 ECHO.
-ECHO Testbed build succeeded.
+ECHO %appName% build succeeded.
 EXIT /B 0
-
-
