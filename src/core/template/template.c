@@ -5,8 +5,8 @@
 #include <ctype.h>
 #include <string.h>
 
-static b yap_template_append(char *output, st capacity, st *used,
-                                const char *text, st length) {
+static b yap_template_append(c *output, st capacity, st *used,
+                                const c *text, st length) {
   if (length > capacity - 1 - *used) {
     return false;
   }
@@ -17,8 +17,8 @@ static b yap_template_append(char *output, st capacity, st *used,
   return true;
 }
 
-static const char *yap_template_find_variable(
-    const YAP_TEMPLATE_CONTEXT *context, const char *name, st name_length) {
+static const c *yap_template_find_variable(
+    const YAP_TEMPLATE_CONTEXT *context, const c *name, st name_length) {
   if (context == NULL) {
     return NULL;
   }
@@ -36,9 +36,9 @@ static const char *yap_template_find_variable(
   return NULL;
 }
 
-YAP_TEMPLATE_STATUS yap_template_render(const char *source,
+YAP_TEMPLATE_STATUS yap_template_render(const c *source,
                                          const YAP_TEMPLATE_CONTEXT *context,
-                                         char *output, st capacity,
+                                         c *output, st capacity,
                                          st *written) {
   if (source == NULL || output == NULL || capacity == 0 || written == NULL ||
       (context != NULL && context->variable_count > 0 &&
@@ -50,22 +50,22 @@ YAP_TEMPLATE_STATUS yap_template_render(const char *source,
   *written = 0;
   output[0] = '\0';
 
-  const char *cursor = source;
+  const c *cursor = source;
 
   while (*cursor != '\0') {
     if (cursor[0] == '{' && cursor[1] == '{') {
-      const char *expression = cursor + 2;
-      const char *end = strstr(expression, "}}");
+      const c *expression = cursor + 2;
+      const c *end = strstr(expression, "}}");
 
       if (end == NULL) {
         return YAP_TEMPLATE_UNTERMINATED_EXPRESSION;
       }
 
-      while (expression < end && isspace((unsigned char)*expression)) {
+      while (expression < end && isspace((unsigned c)*expression)) {
         ++expression;
       }
 
-      while (end > expression && isspace((unsigned char)end[-1])) {
+      while (end > expression && isspace((unsigned c)end[-1])) {
         --end;
       }
 
@@ -73,7 +73,7 @@ YAP_TEMPLATE_STATUS yap_template_render(const char *source,
         return YAP_TEMPLATE_UNKNOWN_VARIABLE;
       }
 
-      const char *value =
+      const c *value =
           yap_template_find_variable(context, expression,
                                      (st)(end - expression));
 
