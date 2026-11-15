@@ -1,0 +1,254 @@
+# Project-generation foundations
+
+This document describes the project-plan executor and template renderer currently present in YAP. These are low-level foundations. They do not yet form a complete project generator and are not connected to the `new` CLI command.
+
+## Current boundary
+
+Two separate components exist:
+
+1. The project component executes a list of filesystem operations.
+2. The template component renders text by replacing named variables.
+
+No component currently loads a template package, parses CLI arguments into project configuration, or automatically converts rendered templates into a project plan.
+
+## Project plan
+
+Public header:
+
+```c
+#include "core/project/project.h"
+```
+
+A plan uses three structures:
+
+- `YAP_PROJECT_OPERATION`: one operation and its relative path.
+- `YAP_PROJECT_PLAN`: output root and ordered operation array.
+- `YAP_PROJECT_RESULT`: status and execution progress.
+
+### Operation types
+
+| Type | Required fields | Effect |
+|---|---|---|
+| `YAP_PROJECT_CREATE_DIRECTORY` | `path` | Create a directory under the plan root |
+| `YAP_PROJECT_WRITE_FILE` | `path` and `content` | Write text content under the plan root |
+
+Paths are relative to the root. Validation rejects absolute paths, empty segments, `.`, `..`, and colon characters in path segments.
+
+### Execution rules
+
+The public function is:
+
+```c
+YAP_PROJECT_RESULT yap_project_generate(const YAP_PROJECT_PLAN *plan);
+```
+
+The executor:
+
+1. Validates the plan.
+2. Creates the root directory.
+3. Walks operations in array order.
+4. Joins the root with each relative path.
+5. Executes directory creation or file writing.
+6. Returns status and operation progress.
+
+Contract:
+
+- The root directory must not already exist.
+- The caller must list parent directories before files that use them.
+- The caller retains ownership of the plan and its strings.
+- Operations execute in order.
+- The executor does not decide which files belong in the project.
+
+### Example plan
+
+This illustrates the current C API. It is not a supported `yap new` command:
+
+```c
+#include "core/project/project.h"
+
+int main(void) {
+  const YAP_PROJECT_OPERATION operations[] = {
+      {
+          .type = YAP_PROJECT_CREATE_DIRECTORY,
+          .path = "src",
+          .content = NULL,
+      },
+      {
+          .type = YAP_PROJECT_CREATE_DIRECTORY,
+          .path = "include",
+          .content = NULL,
+      },
+      {
+          .type = YAP_PROJECT_WRITE_FILE,
+          .path = "src/main.c",
+          .content = "#include <stdio.h>\n\nint main(void) {\n"
+                     "  puts(\"Hello, world!\");\n  return 0;\n}\n",
+      },
+      {
+          .type = YAP_PROJECT_WRITE_FILE,
+          .path = "README.md",
+          .content = "# Example project\n",
+      },
+  };
+
+  const YAP_PROJECT_PLAN plan = {
+      .root = "example",
+      .operations = operations,
+      .operation_count = sizeof(operations) / sizeof(operations[0]),
+  };
+
+  const YAP_PROJECT_RESULT result = yap_project_generate(&plan);
+  return result.status == YAP_PROJECT_SUCCESS ? 0 : 1;
+}
+```
+
+The caller owns the arrays and strings for the duration of the call. The API does not take ownership.
+
+### Result status
+
+| Status | Meaning |
+|---|---|
+| `YAP_PROJECT_SUCCESS` | Every operation completed |
+| `YAP_PROJECT_INVALID_PLAN` | The plan or an operation was invalid |
+| `YAP_PROJECT_PATH_TOO_LONG` | A joined path exceeded the internal path buffer |
+| `YAP_PROJECT_FILESYSTEM_ERROR` | A filesystem operation failed |
+
+The result also contains:
+
+- `completed_operations`: number of completed operations.
+- `failed_operation`: index of the failed operation.
+
+When failure occurs before the operation loop, such as invalid plan or failure to create the root, `failed_operation` is `SIZE_MAX`. It is also `SIZE_MAX` on success.
+
+### Partial output
+
+The executor is not transactional. If a later operation fails, earlier directories and files remain. It does not roll back partial output.
+
+Callers must report partial progress accurately and must not claim that a failed generation left the filesystem unchanged.
+
+## Template renderer
+
+Public header:
+
+```c
+#include "core/template/template.h"
+```
+
+The renderer replaces expressions such as:
+
+```text
+Project: {{project.name}}
+Language: {{project.language}}
+```
+
+The caller supplies a `YAP_TEMPLATE_CONTEXT` containing an array of `YAP_TEMPLATE_VARIABLE` name/value pairs. The renderer writes to a caller-provided output buffer and does not allocate its own buffer.
+
+### Example
+
+```c
+#include <stdio.h>
+
+#include "core/template/template.h"
+
+int main(void) {
+  const YAP_TEMPLATE_VARIABLE variables[] = {
+      {.name = "project.name", .value = "hello"},
+      {.name = "project.language", .value = "C"},
+  };
+
+  const YAP_TEMPLATE_CONTEXT context = {
+      .variables = variables,
+      .variable_count = sizeof(variables) / sizeof(variables[0]),
+  };
+
+  const char *source =
+      "Project: {{project.name}}\n"
+      "Language: {{project.language}}\n";
+
+  char output[256];
+  size_t written = 0;
+
+  const YAP_TEMPLATE_STATUS status =
+      yap_template_render(source, &context, output, sizeof(output), &written);
+
+  if (status != YAP_TEMPLATE_SUCCESS) {
+    return 1;
+  }
+
+  printf("%s", output);
+  return 0;
+}
+```
+
+Whitespace around an expression name is ignored. For example, `{{ project.name }}` resolves the same variable as `{{project.name}}`.
+
+### Status values
+
+| Status | Meaning |
+|---|---|
+| `YAP_TEMPLATE_SUCCESS` | Rendering completed |
+| `YAP_TEMPLATE_INVALID_ARGUMENT` | Required pointer or capacity was invalid |
+| `YAP_TEMPLATE_UNTERMINATED_EXPRESSION` | An opening `{{` has no closing `}}` |
+| `YAP_TEMPLATE_UNKNOWN_VARIABLE` | The expression is empty or no matching variable exists |
+| `YAP_TEMPLATE_BUFFER_TOO_SMALL` | The rendered output does not fit |
+
+The `written` output parameter is reset to zero before rendering and receives the number of output characters on success. When capacity is nonzero, the output is null-terminated.
+
+### Current renderer limitations
+
+The renderer supports variable substitution only. It does not support:
+
+- conditionals;
+- loops;
+- template inheritance or includes;
+- loading template files from disk;
+- project-specific variable validation;
+- file or directory creation.
+
+Unknown variables are errors rather than silently becoming empty strings.
+
+## How the components relate today
+
+```text
+Template source + variable context
+              |
+              v
+     yap_template_render()
+              |
+              v
+        Rendered text
+              |
+              | caller assembles plan
+              v
+        YAP_PROJECT_PLAN
+              |
+              v
+     yap_project_generate()
+              |
+              v
+          Filesystem
+```
+
+The caller currently performs the coordination between rendering and plan construction.
+
+## Intended future workflow
+
+The intended design is to accept a project request from an interface, validate it, resolve a project structure, render required content, build a plan, validate the plan, execute it, and return a structured result.
+
+The CLI and a future TUI should collect the same request and call the same core workflow. Neither interface should duplicate project-generation logic.
+
+That complete workflow is not implemented yet. There is no stable public project configuration API, template package format, template loader, or integration between `yap new`, the renderer, and the plan executor.
+
+## Safety considerations
+
+The plan validator rejects common absolute-path and traversal forms. This is useful validation, but it is not a complete filesystem security boundary.
+
+When extending project generation:
+
+- Validate project names and destination paths before writing.
+- Account for platform-specific path rules and reserved names.
+- Consider symbolic links when writing into untrusted locations.
+- Define behavior when the destination already exists.
+- Make overwrite behavior explicit.
+- Report partial execution and cleanup behavior accurately.
+- Keep template content separate from destination paths.
