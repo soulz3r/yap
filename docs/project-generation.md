@@ -91,7 +91,7 @@ This illustrates how a caller can construct a project plan directly. The `yap ne
 ```c
 #include "core/project/project.h"
 
-int main(void) {
+i32 main(void) {
   const YAP_PROJECT_OPERATION operations[] = {
       {
           .type = YAP_PROJECT_CREATE_DIRECTORY,
@@ -193,7 +193,7 @@ int main(void) {
       "Language: {{project.language}}\n";
 
   char output[256];
-  size_t written = 0;
+  st written = 0;
 
   const YAP_TEMPLATE_STATUS status =
       yap_template_render(source, &context, output, sizeof(output), &written);
