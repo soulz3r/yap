@@ -274,6 +274,7 @@ void print_tree(const char *path) {
       previous_code_page != 0 && SetConsoleOutputCP(CP_UTF8) != 0;
 
   print_tree_utf8(path);
+  fflush(stdout);
 
   if (restore_code_page) {
     SetConsoleOutputCP(previous_code_page);
