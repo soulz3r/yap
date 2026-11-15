@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdbool.h>
 #include <stddef.h>
 
 typedef enum YAP_PROJECT_OPERATION_TYPE {
@@ -11,6 +12,7 @@ typedef struct YAP_PROJECT_OPERATION {
   YAP_PROJECT_OPERATION_TYPE type;
   const char *path;
   const char *content;
+  bool executable;
 } YAP_PROJECT_OPERATION;
 
 typedef struct YAP_PROJECT_PLAN {
