@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <string.h>
 
-static b yap_project_name_valid(const char *name) {
+static b yap_project_name_valid(const c *name) {
   if (name == NULL || name[0] == '\0' || strlen(name) > 64) {
     return false;
   }
@@ -18,7 +18,7 @@ static b yap_project_name_valid(const char *name) {
     return false;
   }
 
-  for (const char *cursor = name; *cursor != '\0'; ++cursor) {
+  for (const c *cursor = name; *cursor != '\0'; ++cursor) {
     const b alphanumeric =
         (*cursor >= 'A' && *cursor <= 'Z') ||
         (*cursor >= 'a' && *cursor <= 'z') ||
@@ -29,7 +29,7 @@ static b yap_project_name_valid(const char *name) {
     }
   }
 
-  static const char *reserved_names[] = {
+  static const c *reserved_names[] = {
       "CON", "PRN", "AUX", "NUL", "COM1", "COM2", "COM3",
       "COM4", "COM5", "COM6", "COM7", "COM8", "COM9",
       "LPT1", "LPT2", "LPT3", "LPT4", "LPT5", "LPT6",
@@ -41,11 +41,11 @@ static b yap_project_name_valid(const char *name) {
     st j = 0;
 
     while (name[j] != '\0' && reserved_names[i][j] != '\0') {
-      char left = name[j];
-      char right = reserved_names[i][j];
+      c left = name[j];
+      c right = reserved_names[i][j];
 
       if (left >= 'a' && left <= 'z') {
-        left = (char)(left - 'a' + 'A');
+        left = (c)(left - 'a' + 'A');
       }
 
       if (left != right) {
@@ -65,7 +65,7 @@ static b yap_project_name_valid(const char *name) {
 
 YAP_PROJECT_RESULT yap_project_template_default(
     const YAP_PROJECT_CONFIG *config) {
-  const char *name = config == NULL ? NULL : config->name;
+  const c *name = config == NULL ? NULL : config->name;
 
   if (!yap_project_name_valid(name)) {
     return (YAP_PROJECT_RESULT){
@@ -75,20 +75,20 @@ YAP_PROJECT_RESULT yap_project_template_default(
     };
   }
 
-  char project_identifier[65];
+  c project_identifier[65];
 
   for (st i = 0; name[i] != '\0'; ++i) {
-    const char character = name[i] == '-' ? '_' : name[i];
+    const c character = name[i] == '-' ? '_' : name[i];
     project_identifier[i] = character;
   }
 
   project_identifier[strlen(name)] = '\0';
 
-  char header_filename[80];
-  char source_filename[80];
-  char project_header[512];
-  char main_source[256];
-  char project_source[512];
+  c header_filename[80];
+  c source_filename[80];
+  c project_header[512];
+  c main_source[256];
+  c project_source[512];
 
   const i32 header_filename_length =
       snprintf(header_filename, sizeof(header_filename), "include/%s.h", name);
@@ -141,7 +141,7 @@ YAP_PROJECT_RESULT yap_project_template_default(
     };
   }
 
-  char build_script[4096];
+  c build_script[4096];
   const i32 build_script_length = snprintf(
       build_script, sizeof(build_script),
       "#!/usr/bin/env bash\n"
@@ -176,7 +176,7 @@ YAP_PROJECT_RESULT yap_project_template_default(
     };
   }
 
-  char build_batch[4096];
+  c build_batch[4096];
   const i32 build_batch_length = snprintf(
       build_batch, sizeof(build_batch),
       "@ECHO OFF\n"
@@ -217,7 +217,7 @@ YAP_PROJECT_RESULT yap_project_template_default(
     };
   }
 
-  static const char *compile_flags =
+  static const c *compile_flags =
       "--std=c23\n"
       "-I\n"
       "include\n"
