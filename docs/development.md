@@ -56,7 +56,7 @@ Keep low-level filesystem operations small and explicit. Current helpers operate
 
 ## C conventions
 
-The project targets C23 and uses the shared aliases from `include/defines.h` throughout its C interfaces and implementation.
+The project targets C23 and uses the shared aliases from `include/defines.h` throughout its C interfaces and implementation. Use `v` for `void`, `c` for `char`, `b` for booleans, `iN`/`uN` for fixed-width integers, `f32`/`f64` for floating-point values, and `st` for sizes.
 
 General expectations:
 
