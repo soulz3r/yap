@@ -3,7 +3,6 @@
 #include "cli/cli_core.h"
 #include "cli/help.h"
 #include "cli/tree.h"
-#include "core/logger/logger.h"
 
 i32 cli_new(int argc, char **argv) {
   // TODO: write what new does
