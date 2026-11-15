@@ -3,6 +3,7 @@
 #include "cli/cli_core.h"
 #include "cli/help.h"
 #include "cli/tree.h"
+#include "core/logger/logger.h"
 
 i32 cli_new(int argc, char **argv) {
   // TODO: write what new does
@@ -53,8 +54,16 @@ i32 cli_clean(int argc, char **argv) {
 }
 
 i32 cli_tree(int argc, char **argv) {
+  (void)argc;
+  (void)argv;
+
   const char *path = ".";
+  YAP_LOG_INFO("TREE", "Generating directory tree");
+  YAP_LOG_DEBUG("TREE", "Tree root: %s", path);
+
   print_tree(path);
+
+  YAP_LOG_INFO("TREE", "Directory tree command finished");
   return 0;
 }
 
