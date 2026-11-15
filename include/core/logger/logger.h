@@ -1,81 +1,91 @@
 #pragma once
 
-// What levels of logging are enabled
-#define LOG_WARN_ENABLED 1
-#define LOG_INFO_ENABLED 1
-#define LOG_DEBUG_ENABLED 1
-#define LOG_TRACE_ENABLED 1
+#include <stdbool.h>
 
-typedef enum log_level {
-  LOG_LEVEL_FATAL = 0, // Anything that makes it not run, like file not found
-  LOG_LEVEL_ERROR = 1, // Serious error, but the program can continue
-  LOG_LEVEL_WARN = 2,  // Something causing suboptimal behavior
-  LOG_LEVEL_INFO = 3,  // Basic information
-  LOG_LEVEL_DEBUG = 4, // Debug information, not for release builds
-  LOG_LEVEL_TRACE = 5, // Very verbose debugging information
-} log_level;
+/*
+ * YAP logging API.
+ *
+ * Initialize the logger before emitting records. Logging is synchronous:
+ * each accepted record is formatted and written before the call returns.
+ * The logger is process-wide and is not thread-safe.
+ */
 
-// Two main functions for most systems:
-// initialize and shutdown
-bool initialize_logging();
-void shutdown_logging();
+typedef enum yap_log_level {
+    YAP_LOG_FATAL = 0,
+    YAP_LOG_ERROR,
+    YAP_LOG_WARN,
+    YAP_LOG_INFO,
+    YAP_LOG_DEBUG,
+    YAP_LOG_TRACE
+} yap_log_level;
 
-// INFO: Exports the function and acts like printf
-void log_output(log_level level, const char *message, ...);
+typedef struct yap_log_config {
+    yap_log_level min_level;
 
-// Fatal level messages
-#define YAP_FATAL(message, ...)                                                \
-  log_output(LOG_LEVEL_FATAL, message, ##__VA_ARGS__)
+    bool console_enabled;
+    bool file_enabled;
 
-// Error level messages
-#define YAP_ERROR(message, ...)                                                \
-  log_output(LOG_LEVEL_ERROR, message, ##__VA_ARGS__)
+    /* Required when file_enabled is true. The file is opened in append mode. */
+    const char *file_path;
 
-// These are checked if enabled or not
-#if YAP_WARN_ENABLED == 1
+    bool include_timestamp;
+    bool include_source;
+    bool use_colors;
+} yap_log_config;
 
-#define YAP_WARN(message, ...)                                                 \
-  log_output(LOG_LEVEL_WARN, message, ##__VA_ARGS__)
+/* Returns sensible defaults: INFO level, console enabled, file disabled. */
+yap_log_config yap_log_config_default(void);
 
-#else
+/*
+ * Initializes the process-wide logger.
+ * Returns false for invalid configuration or if an enabled sink cannot open.
+ * Initialization is transactional: on failure, no sink remains active.
+ */
+bool yap_log_init(const yap_log_config *config);
 
-// Does nothing when LOG_WARN_ENABLED != 1
-#define YAP_WARN(message, ...)
+/* Flushes and closes owned resources. Safe to call when not initialized. */
+void yap_log_shutdown(void);
 
-#endif
+/* Changes the runtime threshold. Returns false if the logger is not initialized
+ * or level is outside the yap_log_level range.
+ */
+bool yap_log_set_level(yap_log_level level);
 
-#if LOG_INFO_ENABLED == 1
+/* Returns whether a record at this level would pass the current filter. */
+bool yap_log_is_enabled(yap_log_level level);
 
-#define YAP_INFO(message, ...)                                                 \
-  log_output(LOG_LEVEL_INFO, message, ##__VA_ARGS__)
+/*
+ * Implementation entry point used by the public macros.
+ * Prefer YAP_LOG_* at call sites so source location is captured automatically.
+ */
+void yap_log_write(
+    yap_log_level level,
+    const char *module,
+    const char *file,
+    int line,
+    const char *function,
+    const char *format,
+    ...
+);
 
-#else
+/*
+ * The format string is the first variadic argument, so calls with or without
+ * additional format arguments are valid standard C variadic-macro usage.
+ */
+#define YAP_LOG_FATAL(module, ...) \
+    yap_log_write(YAP_LOG_FATAL, (module), __FILE__, __LINE__, __func__, __VA_ARGS__)
 
-// Does nothing when LOG_INFO_ENABLED != 1
-#define YAP_INFO(message, ...)
+#define YAP_LOG_ERROR(module, ...) \
+    yap_log_write(YAP_LOG_ERROR, (module), __FILE__, __LINE__, __func__, __VA_ARGS__)
 
-#endif
+#define YAP_LOG_WARN(module, ...) \
+    yap_log_write(YAP_LOG_WARN, (module), __FILE__, __LINE__, __func__, __VA_ARGS__)
 
-#if LOG_DEBUG_ENABLED == 1
+#define YAP_LOG_INFO(module, ...) \
+    yap_log_write(YAP_LOG_INFO, (module), __FILE__, __LINE__, __func__, __VA_ARGS__)
 
-#define YAP_DEBUG(message, ...)                                                \
-  log_output(LOG_LEVEL_DEBUG, message, ##__VA_ARGS__)
+#define YAP_LOG_DEBUG(module, ...) \
+    yap_log_write(YAP_LOG_DEBUG, (module), __FILE__, __LINE__, __func__, __VA_ARGS__)
 
-#else
-
-// Does nothing when LOG_DEBUG_ENABLED != 1
-#define YAP_DEBUG(message, ...)
-
-#endif
-
-#if LOG_TRACE_ENABLED == 1
-
-#define YAP_TRACE(message, ...)                                                \
-  log_output(LOG_LEVEL_TRACE, message, ##__VA_ARGS__)
-
-#else
-
-// Does nothing when LOG_TRACE_ENABLED != 1
-#define YAP_TRACE(message, ...)
-
-#endif
+#define YAP_LOG_TRACE(module, ...) \
+    yap_log_write(YAP_LOG_TRACE, (module), __FILE__, __LINE__, __func__, __VA_ARGS__)
