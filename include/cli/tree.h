@@ -1,3 +1,5 @@
 #pragma once
 
-void print_tree(const char *path);
+#include "defines.h"
+
+v print_tree(const c *path);
