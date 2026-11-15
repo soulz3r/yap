@@ -13,19 +13,19 @@
 st file_count = 0;
 st dir_count = 0;
 
-static b is_directory(const char *path) {
+static b is_directory(const c *path) {
   struct stat info;
   return stat(path, &info) == 0 && S_ISDIR(info.st_mode);
 }
 
-static i32 compare_entries(const void *a, const void *b) {
-  const char *const *x = a;
-  const char *const *y = b;
+static i32 compare_entries(const v *a, const v *b) {
+  const c *const *x = a;
+  const c *const *y = b;
 
   return strcmp(*x, *y);
 }
 
-static void print_entry(const char *name, b isdir, i32 depth,
+static v print_entry(const c *name, b isdir, i32 depth,
                         const b *last, b is_last) {
   for (i32 i = 0; i < depth; i++) {
     printf(last[i] ? "    " : YAP_DIM "│   " YAP_RESET);
@@ -39,26 +39,26 @@ static void print_entry(const char *name, b isdir, i32 depth,
     printf(YAP_GREY "%s\n" YAP_RESET, name);
 }
 
-static void print_count(void) {
+static v print_count(v) {
   printf("\nTotal Directories : " YAP_AQUA "%zu\n" YAP_RESET
          "Total Files       : " YAP_AQUA "%zu\n" YAP_RESET,
          dir_count, file_count);
 }
 
-static void list_dir_l(const char *path, i32 depth, b *last) {
+static v list_dir_l(const c *path, i32 depth, b *last) {
   DIR *dir = opendir(path);
 
   if (!dir)
     return;
 
-  char **entries = NULL;
+  c **entries = NULL;
   st count = 0;
   st capacity = 0;
 
   struct dirent *dp;
 
   while ((dp = readdir(dir)) != NULL) {
-    const char *name = dp->d_name;
+    const c *name = dp->d_name;
 
     if (strcmp(name, ".") == 0 || strcmp(name, "..") == 0 ||
         strcmp(name, ".git") == 0)
@@ -67,7 +67,7 @@ static void list_dir_l(const char *path, i32 depth, b *last) {
     if (count == capacity) {
       st new_capacity = capacity ? capacity * 2 : 16;
 
-      char **tmp = realloc(entries, new_capacity * sizeof(*entries));
+      c **tmp = realloc(entries, new_capacity * sizeof(*entries));
 
       if (!tmp)
         break;
@@ -90,7 +90,7 @@ static void list_dir_l(const char *path, i32 depth, b *last) {
 
   for (st i = 0; i < count; i++) {
     st len = strlen(path) + strlen(entries[i]) + 2;
-    char sub_path[len];
+    c sub_path[len];
 
     snprintf(sub_path, len, "%s/%s", path, entries[i]);
 
@@ -114,7 +114,7 @@ static void list_dir_l(const char *path, i32 depth, b *last) {
   free(entries);
 }
 
-void print_tree(const char *path) {
+v print_tree(const c *path) {
   file_count = 0;
   dir_count = 0;
 
