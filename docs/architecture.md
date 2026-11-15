@@ -79,7 +79,9 @@ These helpers do not recursively create missing parent directories.
 
 ### Built-in default template
 
-`src/core/project/default_template.c` defines the initial C project layout used by `yap new default <project-name>`. It validates the project name, prepares the starter source and build files, and passes an ordered operation list to `yap_project_generate()`. It is intentionally limited to one built-in template.\n\n### Project-plan executor
+`src/core/project/default_template.c` defines the initial C project layout used by `yap new default <project-name>`. It validates the project name, prepares the starter source and build files, and passes an ordered operation list to `yap_project_generate()`. It is intentionally limited to one built-in template.
+
+### Project-plan executor
 
 The public API is in `include/core/project/project.h`. A `YAP_PROJECT_PLAN` contains a root directory and an ordered array of operations. Each operation creates a directory or writes a file.
 
