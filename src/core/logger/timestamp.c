@@ -1,8 +1,8 @@
 #if !defined(_WIN32)
-
-#include "defines.h"
 #define _POSIX_C_SOURCE 200809L
 #endif
+
+#include "defines.h"
 
 #include "logger_internal.h"
 
