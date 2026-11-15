@@ -15,7 +15,7 @@ static const struct command commands[] = {
     {"tree", cli_tree},   {"help", cli_help}, {"version", cli_version},
 };
 
-i32 yap_cli(i32 argc, char *argv[]) {
+i32 yap_cli(i32 argc, c *argv[]) {
 
   // quit if no sub-commands
   if (argc < 2) {
@@ -26,7 +26,7 @@ i32 yap_cli(i32 argc, char *argv[]) {
     return 1;
   }
 
-  const char *name = argv[1];
+  const c *name = argv[1];
 
   // global options.
   if (strcmp(name, "--version") == 0 || strcmp(name, "-v") == 0) {
