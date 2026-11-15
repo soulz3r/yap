@@ -1,5 +1,7 @@
 #include "logger_internal.h"
 
+#include "defines.h"
+
 #include "cli/colors.h"
 
 #include <stdio.h>
@@ -23,8 +25,8 @@ static const char *level_color(YAP_LOG_LEVEL level) {
   }
 }
 
-void yap_log_console_write(const char *line, size_t length,
-                           YAP_LOG_LEVEL level, bool use_colors) {
+void yap_log_console_write(const char *line, st length,
+                           YAP_LOG_LEVEL level, b use_colors) {
   if (line == NULL) {
     return;
   }
@@ -36,7 +38,7 @@ void yap_log_console_write(const char *line, size_t length,
   }
 
   /* Color only the severity label, not the entire log message. */
-  size_t level_length = 0;
+  st level_length = 0;
   while (level_length < length && line[level_length] != ']') {
     level_length++;
   }
@@ -53,12 +55,12 @@ void yap_log_console_write(const char *line, size_t length,
   (void)fwrite(line, sizeof(char), level_length, stderr);
   (void)fputs(YAP_RESET, stderr);
 
-  size_t offset = level_length;
+  st offset = level_length;
 
   /* The timestamp is the next bracketed field. Keep it muted grey. */
   if (offset + 1 < length && line[offset] == ' ' &&
       line[offset + 1] == '[') {
-    size_t timestamp_end = offset + 2;
+    st timestamp_end = offset + 2;
 
     while (timestamp_end < length && line[timestamp_end] != ']') {
       timestamp_end++;
