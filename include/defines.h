@@ -4,6 +4,10 @@
 #include <stddef.h>
 #include <stdint.h>
 
+// Fundamental types
+typedef void v;
+typedef char c;
+
 // Boolean type
 typedef bool b;
 
