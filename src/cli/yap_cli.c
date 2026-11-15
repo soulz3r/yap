@@ -45,6 +45,7 @@ i32 yap_cli(int argc, char *argv[]) {
   }
 
   YAP_LOG_WARN("yap", "Unknown command: %s", name);
+  YAP_LOG_ERROR("APP", "YAP exited with code %d", 1);
   fprintf(stderr, "Run " YAP_GREEN "'yap --help'" YAP_RESET YAP_GREY
                   " for usage.\n" YAP_RESET);
   return 1;
