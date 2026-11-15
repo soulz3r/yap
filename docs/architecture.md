@@ -142,13 +142,11 @@ Fallback macros in `defines.h` do not mean every Unix-like platform is supported
 
 The intended complete workflow still needs:
 
-1. A stable project request/configuration type.
-2. CLI argument parsing that fills that configuration.
-3. A project-generation coordinator that validates configuration and selects a template.
-4. A template definition format and loader.
-5. A way to turn rendered templates into project-plan operations.
-6. Integration of the plan executor with the template renderer.
-7. Structured results for the CLI/TUI to present.
-8. A TUI that uses the same core workflow.
+1. CLI argument parsing that fills the shared project configuration instead of using the compatibility wrapper.
+2. A template definition format and loader for external templates.
+3. A way to turn rendered template files into project-plan operations.
+4. Integration of the plan executor with the template renderer where useful.
+5. Structured result presentation shared by the CLI and TUI.
+6. A TUI that uses the same core workflow.
 
 These are future implementation tasks, not current features.
