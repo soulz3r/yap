@@ -59,6 +59,8 @@ The dispatch table maps a command string to a function pointer. Each handler rec
 
 The CLI owns command parsing and user-facing terminal output. Reusable core APIs should not print CLI-specific messages.
 
+Shared primitive aliases are defined in `include/defines.h`: `b` for `bool`, `i8`/`i16`/`i32`/`i64` and `u8`/`u16`/`u32`/`u64` for fixed-width integers, `f32`/`f64` for floating-point values, and `st` for `size_t`. Use these aliases consistently in YAP's own interfaces and implementation.
+
 ## Core layer
 
 ### Filesystem helpers
@@ -66,9 +68,9 @@ The CLI owns command parsing and user-facing terminal output. Reusable core APIs
 Public header: `include/core/utils/make_fd.h`.
 
 ```c
-bool create_dir(const char *dir);
-bool create_file(const char *path);
-bool write_file(const char *path, const char *content);
+b create_dir(const char *dir);
+b create_file(const char *path);
+b write_file(const char *path, const char *content);
 ```
 
 - `create_dir()` creates one directory.
