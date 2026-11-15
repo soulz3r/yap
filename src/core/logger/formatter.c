@@ -32,19 +32,19 @@ bool yap_log_format_record(const yap_log_record *record, bool include_timestamp,
   size_t used = 0;
   buffer[0] = '\0';
 
-  if (include_timestamp &&
-      !append(buffer, capacity, &used, "[%s] ", record->timestamp)) {
+  if (!append(buffer, capacity, &used, "[%-5s]",
+              yap_log_level_name(record->level))) {
     return false;
   }
 
-  if (!append(buffer, capacity, &used, "[%s] [%s] ",
-              yap_log_level_name(record->level),
-              record->module != NULL ? record->module : "APP")) {
+  if (include_timestamp &&
+      !append(buffer, capacity, &used, " [%s]", record->timestamp)) {
     return false;
   }
 
   if (include_source && record->file != NULL) {
-    if (!append(buffer, capacity, &used, "%s:%d", record->file, record->line)) {
+    if (!append(buffer, capacity, &used, " %s:%d",
+                record->file, record->line)) {
       return false;
     }
 
@@ -52,13 +52,9 @@ bool yap_log_format_record(const yap_log_record *record, bool include_timestamp,
         !append(buffer, capacity, &used, " (%s)", record->function)) {
       return false;
     }
-
-    if (!append(buffer, capacity, &used, " ")) {
-      return false;
-    }
   }
 
-  if (!append(buffer, capacity, &used, "%s", record->message)) {
+  if (!append(buffer, capacity, &used, " %s\n", record->message)) {
     return false;
   }
 
