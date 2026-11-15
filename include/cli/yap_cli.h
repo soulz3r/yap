@@ -11,8 +11,8 @@
  * @param cmd_func Pointer to the function that executes the command.
  */
 struct command {
-  const char *name;
-  i32 (*cmd_func)(i32 argc, char *argv[]);
+  const c *name;
+  i32 (*cmd_func)(i32 argc, c *argv[]);
 };
 
 /**
@@ -24,4 +24,4 @@ struct command {
  * @param argv Array of strings containing the command-line arguments.
  * @return 0 on success, nonzero on failure.
  */
-i32 yap_cli(i32 argc, char *argv[]);
+i32 yap_cli(i32 argc, c *argv[]);
