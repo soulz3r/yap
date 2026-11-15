@@ -41,7 +41,7 @@ static void print_entry(const char *name, b isdir, i32 depth,
 
 static void print_count(void) {
   printf("\nTotal Directories : " YAP_AQUA "%zu\n" YAP_RESET
-         "Total Files       : " YAP_AQUA "%d\n" YAP_RESET,
+         "Total Files       : " YAP_AQUA "%zu\n" YAP_RESET,
          dir_count, file_count);
 }
 
