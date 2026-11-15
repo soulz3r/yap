@@ -2,7 +2,7 @@
 
 **Yet Another Project** is an early-stage C project utility under active development.
 
-**Current reality:** YAP is not yet a usable project generator. The `new`, `add`, `remove`, `check`, `run`, and `clean` commands are placeholders. The working parts are the CLI dispatcher, help/version output, Linux tree traversal, logger, basic filesystem helpers, and two separate low-level APIs for executing a project plan and rendering template variables.
+**Current reality:** YAP is not yet a usable project generator. The `new`, `add`, `remove`, `check`, `run`, and `clean` commands are placeholders. The working parts are the CLI dispatcher, help/version output, Linux and Windows tree traversal, logger, basic filesystem helpers, and two separate low-level APIs for executing a project plan and rendering template variables.
 
 The documentation covers both the code that exists and the architecture being considered. Sections describing a future generator or TUI are design notes, not claims that those features have been implemented. Start with [Current status](#current-status) before treating any command or subsystem as available.
 
@@ -23,7 +23,7 @@ The following table distinguishes implemented behavior from registered command n
 | CLI dispatch | Implemented |
 | `help` / `--help` | Implemented |
 | `version` / `--version` | Implemented |
-| `tree` | Linux implementation exists; Windows implementation is a placeholder |
+| `tree` | Implemented on Linux and Windows |
 | `new` | Placeholder; does not generate a project |
 | `add` | Placeholder |
 | `remove` | Placeholder |
@@ -133,7 +133,7 @@ YAP expects a command as the first argument. Running it without a command prints
 | `check` | Check project state | Placeholder |
 | `run` | Run a project | Placeholder |
 | `clean` | Clean build artifacts | Placeholder |
-| `tree` | Display a directory tree | Linux implementation; Windows unfinished |
+| `tree` | Display a directory tree | Implemented on Linux and Windows |
 | `help` | Display help | Implemented |
 | `version` | Display version | Implemented |
 
@@ -188,7 +188,7 @@ The project executor and template renderer are currently separate. The caller mu
 | Platform | Build script | Notes |
 |---|---|---|
 | Linux | `build.sh` | Clang C23 build; Linux tree traversal exists |
-| Windows 64-bit | `build.bat` | Clang C23 build; tree implementation is unfinished |
+| Windows 64-bit | `build.bat` | Clang C23 build; tree traversal uses the Win32 file enumeration API |
 | Other Unix-like systems | None provided | Not currently a documented target |
 
 Do not assume full platform parity simply because both build scripts exist.
