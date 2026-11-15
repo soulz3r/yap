@@ -216,6 +216,8 @@ Do not assume full platform parity simply because both build scripts exist.
 - [Logger API and examples](docs/logger.md)
 - [Project-generation foundations](docs/project-generation.md)
 - [Development guide](docs/development.md)
+- [Design decisions](docs/design-decisions.md)
+- [Contributing and maintenance](docs/contributing.md)
 - [Troubleshooting](docs/troubleshooting.md)
 
 ## Development
