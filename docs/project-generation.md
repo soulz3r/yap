@@ -168,7 +168,7 @@ Project: {{project.name}}
 Language: {{project.language}}
 ```
 
-The caller supplies a `YAP_TEMPLATE_CONTEXT` containing an array of `YAP_TEMPLATE_VARIABLE` name/value pairs. The renderer writes to a caller-provided output buffer and does not allocate its own buffer. The caller also retains ownership of the project configuration passed to `yap_project_create()`.
+The caller supplies a `YAP_TEMPLATE_CONTEXT` containing an array of `YAP_TEMPLATE_VARIABLE` name/value pairs. The renderer writes to a caller-provided output buffer and does not allocate its own buffer.
 
 ### Example
 
