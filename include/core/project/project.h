@@ -21,11 +21,19 @@ typedef struct YAP_PROJECT_PLAN {
   size_t operation_count;
 } YAP_PROJECT_PLAN;
 
+/* User input shared by every project template. */
+typedef struct YAP_PROJECT_CONFIG {
+  const char *name;
+  const char *template_name;
+} YAP_PROJECT_CONFIG;
+
 typedef enum YAP_PROJECT_STATUS {
   YAP_PROJECT_SUCCESS,
   YAP_PROJECT_INVALID_PLAN,
   YAP_PROJECT_PATH_TOO_LONG,
-  YAP_PROJECT_FILESYSTEM_ERROR
+  YAP_PROJECT_FILESYSTEM_ERROR,
+  YAP_PROJECT_INVALID_CONFIG,
+  YAP_PROJECT_UNKNOWN_TEMPLATE
 } YAP_PROJECT_STATUS;
 
 typedef struct YAP_PROJECT_RESULT {
@@ -43,5 +51,8 @@ typedef struct YAP_PROJECT_RESULT {
  */
 YAP_PROJECT_RESULT yap_project_generate(const YAP_PROJECT_PLAN *plan);
 
-/* Creates the built-in default C project template in a new directory. */
+/* Selects a built-in template and generates a project from its config. */
+YAP_PROJECT_RESULT yap_project_create(const YAP_PROJECT_CONFIG *config);
+
+/* Convenience wrapper retained for the existing `new default` command. */
 YAP_PROJECT_RESULT yap_project_generate_default(const char *name);
