@@ -1,7 +1,8 @@
 #pragma once
 
-#include <stdbool.h>
+#include "defines.h"
 
-bool create_dir(const char *dir);
-bool create_file(const char *path);
-bool write_file(const char *path, const char *content);
+
+b create_dir(const char *dir);
+b create_file(const char *path);
+b write_file(const char *path, const char *content);
