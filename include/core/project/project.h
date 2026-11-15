@@ -1,7 +1,7 @@
 #pragma once
 
-#include <stdbool.h>
-#include <stddef.h>
+#include "defines.h"
+
 
 typedef enum YAP_PROJECT_OPERATION_TYPE {
   YAP_PROJECT_CREATE_DIRECTORY,
@@ -12,13 +12,13 @@ typedef struct YAP_PROJECT_OPERATION {
   YAP_PROJECT_OPERATION_TYPE type;
   const char *path;
   const char *content;
-  bool executable;
+  b executable;
 } YAP_PROJECT_OPERATION;
 
 typedef struct YAP_PROJECT_PLAN {
   const char *root;
   const YAP_PROJECT_OPERATION *operations;
-  size_t operation_count;
+  st operation_count;
 } YAP_PROJECT_PLAN;
 
 /* User input shared by every project template. */
@@ -38,8 +38,8 @@ typedef enum YAP_PROJECT_STATUS {
 
 typedef struct YAP_PROJECT_RESULT {
   YAP_PROJECT_STATUS status;
-  size_t completed_operations;
-  size_t failed_operation;
+  st completed_operations;
+  st failed_operation;
 } YAP_PROJECT_RESULT;
 
 /*
