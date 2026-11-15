@@ -44,6 +44,6 @@ i32 yap_cli(int argc, char *argv[]) {
     }
   }
 
-  YAP_LOG_WARN("yap", "Unknown command: %s", name);
+  YAP_LOG_ERROR("yap", "Unknown command: %s", name);
   return 1;
 }
