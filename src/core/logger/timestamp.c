@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <time.h>
 
-b yap_log_timestamp(char *buffer, st capacity) {
+b yap_log_timestamp(c *buffer, st capacity) {
   if (buffer == NULL || capacity == 0) {
     return false;
   }
