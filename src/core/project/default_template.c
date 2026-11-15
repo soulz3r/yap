@@ -71,12 +71,43 @@ YAP_PROJECT_RESULT yap_project_generate_default(const char *name) {
     };
   }
 
+  char test_header[512];
+  const int test_header_length = snprintf(
+      test_header, sizeof(test_header),
+      "#ifndef TEST_H\n"
+      "#define TEST_H\n"
+      "\n"
+      "#define PROJECT_NAME \"%s\"\n"
+      "\n"
+      "void test(void);\n"
+      "\n"
+      "#endif // TEST_H\n",
+      name);
+
+  if (test_header_length < 0 ||
+      (size_t)test_header_length >= sizeof(test_header)) {
+    return (YAP_PROJECT_RESULT){
+        .status = YAP_PROJECT_PATH_TOO_LONG,
+        .completed_operations = 0,
+        .failed_operation = SIZE_MAX,
+    };
+  }
+
   static const char *main_source =
-      "#include <stdio.h>\n"
+      "#include \"test.h\"\n"
       "\n"
       "int main(void) {\n"
-      "  puts(\"Hello, world!\");\n"
+      "  test();\n"
       "  return 0;\n"
+      "}\n";
+
+  static const char *test_source =
+      "#include \"test.h\"\n"
+      "\n"
+      "#include <stdio.h>\n"
+      "\n"
+      "void test(void) {\n"
+      "  printf(\"Hello from %s\\n\", PROJECT_NAME);\n"
       "}\n";
 
   char build_script[4096];
@@ -175,8 +206,18 @@ YAP_PROJECT_RESULT yap_project_generate_default(const char *name) {
       },
       {
           .type = YAP_PROJECT_WRITE_FILE,
+          .path = "include/test.h",
+          .content = test_header,
+      },
+      {
+          .type = YAP_PROJECT_WRITE_FILE,
           .path = "src/main.c",
           .content = main_source,
+      },
+      {
+          .type = YAP_PROJECT_WRITE_FILE,
+          .path = "src/test.c",
+          .content = test_source,
       },
       {
           .type = YAP_PROJECT_WRITE_FILE,
