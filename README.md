@@ -2,13 +2,13 @@
 
 **Yet Another Project** is an early-stage C project utility under active development.
 
-**Current reality:** YAP is not yet a usable project generator. The `new`, `add`, `remove`, `check`, `run`, and `clean` commands are placeholders. The working parts are the CLI dispatcher, help/version output, Linux and Windows tree traversal, logger, basic filesystem helpers, and two separate low-level APIs for executing a project plan and rendering template variables.
+**Current reality:** YAP is an early-stage project utility. `yap new default <project-name>` creates a starter C project with source/include directories and Linux/Windows build scripts. The `add`, `remove`, `check`, `run`, and `clean` commands remain placeholders. Other working parts include the CLI dispatcher, help/version output, Linux and Windows tree traversal, logger, filesystem helpers, project-plan executor, and template renderer.
 
 The documentation covers both the code that exists and the architecture being considered. Sections describing a future generator or TUI are design notes, not claims that those features have been implemented. Start with [Current status](#current-status) before treating any command or subsystem as available.
 
 ## Overview
 
-YAP is being developed as a C-based project setup and maintenance tool. The current implementation is a collection of foundations rather than a complete workflow.
+YAP is being developed as a C-based project setup and maintenance tool. The current implementation is a collection of foundations plus one working default project-creation path, rather than a complete project-generation workflow.
 
 The intended direction is to keep interfaces separate from the work: a CLI, and eventually a TUI, should collect a request and pass it to reusable core functionality. That end-to-end workflow does not exist yet.
 
@@ -24,7 +24,7 @@ The following table distinguishes implemented behavior from registered command n
 | `help` / `--help` | Implemented |
 | `version` / `--version` | Implemented |
 | `tree` | Implemented on Linux and Windows |
-| `new` | Placeholder; does not generate a project |
+| `new` | Implements the built-in `default` C project template |
 | `add` | Placeholder |
 | `remove` | Placeholder |
 | `check` | Placeholder |
@@ -32,12 +32,12 @@ The following table distinguishes implemented behavior from registered command n
 | `clean` | Placeholder |
 | Logger | Implemented diagnostic component |
 | Filesystem helpers | Basic directory creation, file creation, and file writing |
-| Project-plan executor | Implemented low-level API; not wired into the CLI |
+| Project-plan executor | Implemented low-level API; used by the `new default` template |
 | Template renderer | Implements `{{variable.name}}` substitution; not wired into project generation |
 | Complete project-generation workflow | Not yet implemented |
 | TUI | Planned, not implemented |
 
-A command being present in the dispatcher does not mean the feature is ready. In particular, the current `yap new` handler is a placeholder and does not create a project.
+A command being present in the dispatcher does not mean every planned feature is ready. The `new` command currently supports only its built-in `default` template.
 
 ## Requirements
 
@@ -123,11 +123,19 @@ Windows:
 
 YAP expects a command as the first argument. Running it without a command prints a usage hint and returns a nonzero status.
 
+Create a starter C project with:
+
+```sh
+yap new default myproject
+```
+
+This creates a `myproject/` directory containing `include/`, `src/main.c`, `build.sh`, `build.bat`, and `compile_flags.txt`. See [CLI usage](docs/usage.md) for name restrictions and build instructions.
+
 ## Commands
 
 | Command | Intended purpose | Current behavior |
 |---|---|---|
-| `new` | Create a project | Placeholder |
+| `new` | Create a project | Built-in `default` template |
 | `add` | Add a project component | Placeholder |
 | `remove` | Remove a project component | Placeholder |
 | `check` | Check project state | Placeholder |
@@ -144,7 +152,7 @@ Global options:
 | `-h`, `--help` | Display help |
 | `-v`, `--version` | Display version |
 
-Command-specific arguments are not stable yet. See [CLI usage](docs/usage.md) for the exact current behavior and limitations.
+The implemented `new` syntax is `yap new default <project-name>`. Other command-specific arguments are not implemented. See [CLI usage](docs/usage.md) for exact behavior and limitations.
 
 ## Project layout
 
@@ -178,7 +186,7 @@ This describes the current source organization, not a guarantee that every subsy
 - **CLI:** global option handling and command dispatch.
 - **Logger:** diagnostic records written to enabled sinks.
 - **Filesystem helpers:** basic single-directory and file operations.
-- **Project-plan executor:** executes an ordered caller-provided list of directory/file operations.
+- **Project-plan executor:** executes an ordered caller-provided list of directory/file operations and powers the built-in default template.
 - **Template renderer:** substitutes named variables in caller-provided text.
 
 The project executor and template renderer are currently separate. The caller must coordinate them; no template package loader or complete project-generation coordinator exists yet.
