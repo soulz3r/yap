@@ -71,44 +71,79 @@ YAP_PROJECT_RESULT yap_project_generate_default(const char *name) {
     };
   }
 
+  char project_identifier[65];
+  char header_guard[65];
+
+  for (size_t i = 0; name[i] != '\0'; ++i) {
+    const char character = name[i] == '-' ? '_' : name[i];
+    project_identifier[i] = character;
+    header_guard[i] = character >= 'a' && character <= 'z'
+                          ? (char)(character - 'a' + 'A')
+                          : character;
+  }
+
+  project_identifier[strlen(name)] = '\0';
+  header_guard[strlen(name)] = '\0';
+
+  char header_filename[80];
+  char source_filename[80];
   char project_header[512];
+  char main_source[256];
+  char project_source[512];
+
+  const int header_filename_length =
+      snprintf(header_filename, sizeof(header_filename), "include/%s.h", name);
+  const int source_filename_length =
+      snprintf(source_filename, sizeof(source_filename), "src/%s.c", name);
   const int project_header_length = snprintf(
       project_header, sizeof(project_header),
-      "#ifndef PROJECTNAME_H\n"
-      "#define PROJECTNAME_H\n"
+      "#ifndef %s_H\n"
+      "#define %s_H\n"
       "\n"
       "#define PROJECT_NAME \"%s\"\n"
       "\n"
-      "void projectname(void);\n"
+      "void %s(void);\n"
       "\n"
-      "#endif // PROJECTNAME_H\n",
-      name);
+      "#endif // %s_H\n",
+      header_guard, header_guard, name, project_identifier, header_guard);
 
-  if (project_header_length < 0 ||
-      (size_t)project_header_length >= sizeof(project_header)) {
+  const int main_source_length = snprintf(
+      main_source, sizeof(main_source),
+      "#include \"%s.h\"\n"
+      "\n"
+      "int main(void) {\n"
+      "  %s();\n"
+      "  return 0;\n"
+      "}\n",
+      name, project_identifier);
+
+  const int project_source_length = snprintf(
+      project_source, sizeof(project_source),
+      "#include \"%s.h\"\n"
+      "\n"
+      "#include <stdio.h>\n"
+      "\n"
+      "void %s(void) {\n"
+      "  printf(\"Hello from %%s\\n\", PROJECT_NAME);\n"
+      "}\n",
+      name, project_identifier);
+
+  if (header_filename_length < 0 ||
+      (size_t)header_filename_length >= sizeof(header_filename) ||
+      source_filename_length < 0 ||
+      (size_t)source_filename_length >= sizeof(source_filename) ||
+      project_header_length < 0 ||
+      (size_t)project_header_length >= sizeof(project_header) ||
+      main_source_length < 0 ||
+      (size_t)main_source_length >= sizeof(main_source) ||
+      project_source_length < 0 ||
+      (size_t)project_source_length >= sizeof(project_source)) {
     return (YAP_PROJECT_RESULT){
         .status = YAP_PROJECT_PATH_TOO_LONG,
         .completed_operations = 0,
         .failed_operation = SIZE_MAX,
     };
   }
-
-  static const char *main_source =
-      "#include \"projectname.h\"\n"
-      "\n"
-      "int main(void) {\n"
-      "  projectname();\n"
-      "  return 0;\n"
-      "}\n";
-
-  static const char *project_source =
-      "#include \"projectname.h\"\n"
-      "\n"
-      "#include <stdio.h>\n"
-      "\n"
-      "void projectname(void) {\n"
-      "  printf(\"Hello from %s\\n\", PROJECT_NAME);\n"
-      "}\n";
 
   char build_script[4096];
   const int build_script_length = snprintf(
@@ -206,7 +241,7 @@ YAP_PROJECT_RESULT yap_project_generate_default(const char *name) {
       },
       {
           .type = YAP_PROJECT_WRITE_FILE,
-          .path = "include/projectname.h",
+          .path = header_filename,
           .content = project_header,
       },
       {
@@ -216,7 +251,7 @@ YAP_PROJECT_RESULT yap_project_generate_default(const char *name) {
       },
       {
           .type = YAP_PROJECT_WRITE_FILE,
-          .path = "src/projectname.c",
+          .path = source_filename,
           .content = project_source,
       },
       {
