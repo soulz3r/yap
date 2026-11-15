@@ -4,8 +4,8 @@
 
 
 typedef struct YAP_TEMPLATE_VARIABLE {
-  const char *name;
-  const char *value;
+  const c *name;
+  const c *value;
 } YAP_TEMPLATE_VARIABLE;
 
 typedef struct YAP_TEMPLATE_CONTEXT {
@@ -26,7 +26,7 @@ typedef enum YAP_TEMPLATE_STATUS {
  * The output is always null-terminated when capacity is nonzero.
  * Expressions not found in the context are reported as errors.
  */
-YAP_TEMPLATE_STATUS yap_template_render(const char *source,
+YAP_TEMPLATE_STATUS yap_template_render(const c *source,
                                          const YAP_TEMPLATE_CONTEXT *context,
-                                         char *output, st capacity,
+                                         c *output, st capacity,
                                          st *written);
