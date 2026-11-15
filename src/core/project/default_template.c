@@ -1,13 +1,13 @@
 #include "core/project/project.h"
+
+#include "defines.h"
 #include "core/project/project_create_internal.h"
 
-#include <stdbool.h>
-#include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 
-static bool yap_project_name_valid(const char *name) {
+static b yap_project_name_valid(const char *name) {
   if (name == NULL || name[0] == '\0' || strlen(name) > 64) {
     return false;
   }
@@ -19,7 +19,7 @@ static bool yap_project_name_valid(const char *name) {
   }
 
   for (const char *cursor = name; *cursor != '\0'; ++cursor) {
-    const bool alphanumeric =
+    const b alphanumeric =
         (*cursor >= 'A' && *cursor <= 'Z') ||
         (*cursor >= 'a' && *cursor <= 'z') ||
         (*cursor >= '0' && *cursor <= '9');
@@ -36,9 +36,9 @@ static bool yap_project_name_valid(const char *name) {
       "LPT7", "LPT8", "LPT9",
   };
 
-  for (size_t i = 0;
+  for (st i = 0;
        i < sizeof(reserved_names) / sizeof(reserved_names[0]); ++i) {
-    size_t j = 0;
+    st j = 0;
 
     while (name[j] != '\0' && reserved_names[i][j] != '\0') {
       char left = name[j];
@@ -77,7 +77,7 @@ YAP_PROJECT_RESULT yap_project_template_default(
 
   char project_identifier[65];
 
-  for (size_t i = 0; name[i] != '\0'; ++i) {
+  for (st i = 0; name[i] != '\0'; ++i) {
     const char character = name[i] == '-' ? '_' : name[i];
     project_identifier[i] = character;
   }
@@ -90,11 +90,11 @@ YAP_PROJECT_RESULT yap_project_template_default(
   char main_source[256];
   char project_source[512];
 
-  const int header_filename_length =
+  const i32 header_filename_length =
       snprintf(header_filename, sizeof(header_filename), "include/%s.h", name);
-  const int source_filename_length =
+  const i32 source_filename_length =
       snprintf(source_filename, sizeof(source_filename), "src/%s.c", name);
-  const int project_header_length = snprintf(
+  const i32 project_header_length = snprintf(
       project_header, sizeof(project_header),
       "#pragma once\n"
       "\n"
@@ -103,7 +103,7 @@ YAP_PROJECT_RESULT yap_project_template_default(
       "void %s(void);\n",
       name, project_identifier);
 
-  const int main_source_length = snprintf(
+  const i32 main_source_length = snprintf(
       main_source, sizeof(main_source),
       "#include \"%s.h\"\n"
       "\n"
@@ -113,7 +113,7 @@ YAP_PROJECT_RESULT yap_project_template_default(
       "}\n",
       name, project_identifier);
 
-  const int project_source_length = snprintf(
+  const i32 project_source_length = snprintf(
       project_source, sizeof(project_source),
       "#include \"%s.h\"\n"
       "\n"
@@ -125,15 +125,15 @@ YAP_PROJECT_RESULT yap_project_template_default(
       name, project_identifier);
 
   if (header_filename_length < 0 ||
-      (size_t)header_filename_length >= sizeof(header_filename) ||
+      (st)header_filename_length >= sizeof(header_filename) ||
       source_filename_length < 0 ||
-      (size_t)source_filename_length >= sizeof(source_filename) ||
+      (st)source_filename_length >= sizeof(source_filename) ||
       project_header_length < 0 ||
-      (size_t)project_header_length >= sizeof(project_header) ||
+      (st)project_header_length >= sizeof(project_header) ||
       main_source_length < 0 ||
-      (size_t)main_source_length >= sizeof(main_source) ||
+      (st)main_source_length >= sizeof(main_source) ||
       project_source_length < 0 ||
-      (size_t)project_source_length >= sizeof(project_source)) {
+      (st)project_source_length >= sizeof(project_source)) {
     return (YAP_PROJECT_RESULT){
         .status = YAP_PROJECT_PATH_TOO_LONG,
         .completed_operations = 0,
@@ -142,7 +142,7 @@ YAP_PROJECT_RESULT yap_project_template_default(
   }
 
   char build_script[4096];
-  const int build_script_length = snprintf(
+  const i32 build_script_length = snprintf(
       build_script, sizeof(build_script),
       "#!/usr/bin/env bash\n"
       "\n"
@@ -168,7 +168,7 @@ YAP_PROJECT_RESULT yap_project_template_default(
       name, name);
 
   if (build_script_length < 0 ||
-      (size_t)build_script_length >= sizeof(build_script)) {
+      (st)build_script_length >= sizeof(build_script)) {
     return (YAP_PROJECT_RESULT){
         .status = YAP_PROJECT_PATH_TOO_LONG,
         .completed_operations = 0,
@@ -177,7 +177,7 @@ YAP_PROJECT_RESULT yap_project_template_default(
   }
 
   char build_batch[4096];
-  const int build_batch_length = snprintf(
+  const i32 build_batch_length = snprintf(
       build_batch, sizeof(build_batch),
       "@ECHO OFF\n"
       "SETLOCAL EnableDelayedExpansion\n"
@@ -209,7 +209,7 @@ YAP_PROJECT_RESULT yap_project_template_default(
       name);
 
   if (build_batch_length < 0 ||
-      (size_t)build_batch_length >= sizeof(build_batch)) {
+      (st)build_batch_length >= sizeof(build_batch)) {
     return (YAP_PROJECT_RESULT){
         .status = YAP_PROJECT_PATH_TOO_LONG,
         .completed_operations = 0,
