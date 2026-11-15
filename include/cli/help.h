@@ -1,5 +1,7 @@
 #pragma once
 
-void help(void);
-void version(void);
-void print_tree(const char *path);
+#include "defines.h"
+
+v help(v);
+v version(v);
+v print_tree(const c *path);
