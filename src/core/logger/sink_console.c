@@ -4,7 +4,7 @@
 
 #include <stdio.h>
 
-static const char *level_color(yap_log_level level) {
+static const char *level_color(YAP_LOG_LEVEL level) {
   switch (level) {
     case YAP_LOG_FATAL:
       return YAP_BOLD YAP_RED;
@@ -24,7 +24,7 @@ static const char *level_color(yap_log_level level) {
 }
 
 void yap_log_console_write(const char *line, size_t length,
-                           yap_log_level level, bool use_colors) {
+                           YAP_LOG_LEVEL level, bool use_colors) {
   if (line == NULL) {
     return;
   }
