@@ -27,7 +27,7 @@ The CLI should parse arguments and communicate the user's request. Reusable core
        CLI or future TUI output
 ```
 
-This is the intended direction, not the current end-to-end implementation. At present, most command handlers are placeholders. The `new` command supports one built-in `default` template and uses the project-plan executor; the general template renderer is still independent.
+This is the intended direction, not the current end-to-end implementation. At present, most command handlers are placeholders. The `new` command supports one built-in `default` template through the project-creation coordinator and project-plan executor; the general template renderer is still independent.
 
 ## Process entry point
 
@@ -76,6 +76,12 @@ bool write_file(const char *path, const char *content);
 - `write_file()` writes text content, replacing existing content.
 
 These helpers do not recursively create missing parent directories.
+
+### Project creation coordinator
+
+`include/core/project/project.h` exposes `YAP_PROJECT_CONFIG` and `yap_project_create()`. The configuration contains the project name and template name. `src/core/project/project_create.c` selects a registered built-in template and delegates generation to it. The existing `yap_project_generate_default()` function remains as a compatibility wrapper for the current CLI command.
+
+The coordinator does not create files itself. It selects a template provider; the provider prepares its ordered operation list and passes it to the project-plan executor.
 
 ### Built-in default template
 
