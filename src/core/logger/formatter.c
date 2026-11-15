@@ -32,7 +32,7 @@ bool yap_log_format_record(const yap_log_record *record, bool include_timestamp,
   size_t used = 0;
   buffer[0] = '\0';
 
-  if (!append(buffer, capacity, &used, "[%-5s]",
+  if (!append(buffer, capacity, &used, "[%s]",
               yap_log_level_name(record->level))) {
     return false;
   }
