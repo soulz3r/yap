@@ -6,7 +6,7 @@
 
 #include <stdio.h>
 
-static const char *level_color(YAP_LOG_LEVEL level) {
+static const c *level_color(YAP_LOG_LEVEL level) {
   switch (level) {
     case YAP_LOG_FATAL:
       return YAP_BOLD YAP_RED;
@@ -25,15 +25,15 @@ static const char *level_color(YAP_LOG_LEVEL level) {
   }
 }
 
-void yap_log_console_write(const char *line, st length,
+v yap_log_console_write(const c *line, st length,
                            YAP_LOG_LEVEL level, b use_colors) {
   if (line == NULL) {
     return;
   }
 
   if (!use_colors) {
-    (void)fwrite(line, sizeof(char), length, stderr);
-    (void)fflush(stderr);
+    (v)fwrite(line, sizeof(c), length, stderr);
+    (v)fflush(stderr);
     return;
   }
 
@@ -44,16 +44,16 @@ void yap_log_console_write(const char *line, st length,
   }
 
   if (level_length == length) {
-    (void)fwrite(line, sizeof(char), length, stderr);
-    (void)fflush(stderr);
+    (v)fwrite(line, sizeof(c), length, stderr);
+    (v)fflush(stderr);
     return;
   }
 
   level_length++;
 
-  (void)fputs(level_color(level), stderr);
-  (void)fwrite(line, sizeof(char), level_length, stderr);
-  (void)fputs(YAP_RESET, stderr);
+  (v)fputs(level_color(level), stderr);
+  (v)fwrite(line, sizeof(c), level_length, stderr);
+  (v)fputs(YAP_RESET, stderr);
 
   st offset = level_length;
 
@@ -69,17 +69,17 @@ void yap_log_console_write(const char *line, st length,
     if (timestamp_end < length) {
       timestamp_end++;
 
-      (void)fwrite(line + offset, sizeof(char), 1, stderr);
-      (void)fputs(YAP_GREY, stderr);
-      (void)fwrite(line + offset + 1, sizeof(char),
+      (v)fwrite(line + offset, sizeof(c), 1, stderr);
+      (v)fputs(YAP_GREY, stderr);
+      (v)fwrite(line + offset + 1, sizeof(c),
                    timestamp_end - offset - 1, stderr);
-      (void)fputs(YAP_RESET, stderr);
+      (v)fputs(YAP_RESET, stderr);
 
       offset = timestamp_end;
     }
   }
 
   /* Message and optional source location use the terminal's normal color. */
-  (void)fwrite(line + offset, sizeof(char), length - offset, stderr);
-  (void)fflush(stderr);
+  (v)fwrite(line + offset, sizeof(c), length - offset, stderr);
+  (v)fflush(stderr);
 }
