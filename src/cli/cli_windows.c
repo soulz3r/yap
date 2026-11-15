@@ -12,7 +12,7 @@
 #include <windows.h>
 
 typedef struct tree_entry {
-  char *name;
+  c *name;
   b is_directory;
   b is_reparse_point;
 } TREE_ENTRY;
@@ -20,9 +20,9 @@ typedef struct tree_entry {
 static st file_count = 0;
 static st dir_count = 0;
 
-static char *copy_string(const char *source) {
+static c *copy_string(const c *source) {
   st length = strlen(source) + 1;
-  char *copy = malloc(length);
+  c *copy = malloc(length);
 
   if (copy != NULL) {
     memcpy(copy, source, length);
@@ -31,7 +31,7 @@ static char *copy_string(const char *source) {
   return copy;
 }
 
-static i32 compare_entries(const void *a, const void *b) {
+static i32 compare_entries(const v *a, const v *b) {
   const TREE_ENTRY *x = a;
   const TREE_ENTRY *y = b;
 
@@ -39,7 +39,7 @@ static i32 compare_entries(const void *a, const void *b) {
   return result != 0 ? result : strcmp(x->name, y->name);
 }
 
-static void free_entries(TREE_ENTRY *entries, st count) {
+static v free_entries(TREE_ENTRY *entries, st count) {
   for (st i = 0; i < count; i++) {
     free(entries[i].name);
   }
@@ -47,7 +47,7 @@ static void free_entries(TREE_ENTRY *entries, st count) {
   free(entries);
 }
 
-static char *make_search_path(const char *path) {
+static c *make_search_path(const c *path) {
   st length = strlen(path);
   b has_separator =
       length > 0 && (path[length - 1] == '\\' || path[length - 1] == '/');
@@ -57,7 +57,7 @@ static char *make_search_path(const char *path) {
   }
 
   st capacity = length + (has_separator ? 2 : 3);
-  char *search_path = malloc(capacity);
+  c *search_path = malloc(capacity);
 
   if (search_path == NULL) {
     return NULL;
@@ -67,7 +67,7 @@ static char *make_search_path(const char *path) {
   return search_path;
 }
 
-static char *make_child_path(const char *path, const char *name) {
+static c *make_child_path(const c *path, const c *name) {
   st path_length = strlen(path);
   st name_length = strlen(name);
   b has_separator =
@@ -79,7 +79,7 @@ static char *make_child_path(const char *path, const char *name) {
   }
 
   st capacity = path_length + name_length + (has_separator ? 1 : 2);
-  char *child_path = malloc(capacity);
+  c *child_path = malloc(capacity);
 
   if (child_path == NULL) {
     return NULL;
@@ -90,9 +90,9 @@ static char *make_child_path(const char *path, const char *name) {
   return child_path;
 }
 
-static b read_entries(const char *path, TREE_ENTRY **entries_out,
+static b read_entries(const c *path, TREE_ENTRY **entries_out,
                          st *count_out) {
-  char *search_path = make_search_path(path);
+  c *search_path = make_search_path(path);
 
   if (search_path == NULL) {
     fprintf(stderr, "yap: unable to allocate directory search path\n");
@@ -115,7 +115,7 @@ static b read_entries(const char *path, TREE_ENTRY **entries_out,
   b success = true;
 
   do {
-    const char *name = data.cFileName;
+    const c *name = data.cFileName;
 
     if (strcmp(name, ".") == 0 || strcmp(name, "..") == 0 ||
         strcmp(name, ".git") == 0) {
@@ -143,7 +143,7 @@ static b read_entries(const char *path, TREE_ENTRY **entries_out,
       capacity = new_capacity;
     }
 
-    char *entry_name = copy_string(name);
+    c *entry_name = copy_string(name);
 
     if (entry_name == NULL) {
       success = false;
@@ -180,7 +180,7 @@ static b read_entries(const char *path, TREE_ENTRY **entries_out,
   return true;
 }
 
-static void print_entry(const char *name, b is_directory, i32 depth,
+static v print_entry(const c *name, b is_directory, i32 depth,
                         const b *last, b is_last) {
   for (i32 i = 0; i < depth; i++) {
     printf(last[i] ? "    " : YAP_DIM "│   " YAP_RESET);
@@ -195,7 +195,7 @@ static void print_entry(const char *name, b is_directory, i32 depth,
   }
 }
 
-static void list_directory(const char *path, i32 depth, b *last) {
+static v list_directory(const c *path, i32 depth, b *last) {
   TREE_ENTRY *entries = NULL;
   st count = 0;
 
@@ -214,7 +214,7 @@ static void list_directory(const char *path, i32 depth, b *last) {
 
       // Do not follow junctions or symbolic links; they can form cycles.
       if (!entry->is_reparse_point && depth < 255) {
-        char *child_path = make_child_path(path, entry->name);
+        c *child_path = make_child_path(path, entry->name);
 
         if (child_path == NULL) {
           fprintf(stderr, "yap: unable to allocate path for '%s'\n",
@@ -233,13 +233,13 @@ static void list_directory(const char *path, i32 depth, b *last) {
   free_entries(entries, count);
 }
 
-static void print_count(void) {
+static v print_count(v) {
   printf("\nTotal Directories : " YAP_AQUA "%zu\n" YAP_RESET
          "Total Files       : " YAP_AQUA "%zu\n" YAP_RESET,
          dir_count, file_count);
 }
 
-static void print_tree_utf8(const char *path) {
+static v print_tree_utf8(const c *path) {
   if (path == NULL || path[0] == '\0') {
     fprintf(stderr, "yap: tree requires a valid directory path\n");
     return;
@@ -269,7 +269,7 @@ static void print_tree_utf8(const char *path) {
   print_count();
 }
 
-void print_tree(const char *path) {
+v print_tree(const c *path) {
   const UINT previous_code_page = GetConsoleOutputCP();
   const b restore_code_page =
       previous_code_page != 0 && SetConsoleOutputCP(CP_UTF8) != 0;
