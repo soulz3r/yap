@@ -119,10 +119,11 @@ The logger is a process-wide diagnostic facility. It formats records and writes 
 
 The current project and template APIs use caller-owned data:
 
+- The caller owns the project configuration and its strings.
 - The caller owns the project plan and its strings.
 - The caller owns the template context and its variable strings.
 - The caller owns the template output buffer.
-- Neither API takes ownership of those objects.
+- The APIs do not take ownership of those objects.
 
 Keep ownership and lifetime requirements explicit when extending these APIs.
 
