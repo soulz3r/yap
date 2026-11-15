@@ -29,15 +29,55 @@ void yap_log_console_write(const char *line, size_t length,
     return;
   }
 
-  if (use_colors) {
-    (void)fputs(level_color(level), stderr);
+  if (!use_colors) {
+    (void)fwrite(line, sizeof(char), length, stderr);
+    (void)fflush(stderr);
+    return;
   }
 
-  (void)fwrite(line, sizeof(char), length, stderr);
-
-  if (use_colors) {
-    (void)fputs(YAP_RESET, stderr);
+  /* Color only the severity label, not the entire log message. */
+  size_t level_length = 0;
+  while (level_length < length && line[level_length] != ']') {
+    level_length++;
   }
 
+  if (level_length == length) {
+    (void)fwrite(line, sizeof(char), length, stderr);
+    (void)fflush(stderr);
+    return;
+  }
+
+  level_length++;
+
+  (void)fputs(level_color(level), stderr);
+  (void)fwrite(line, sizeof(char), level_length, stderr);
+  (void)fputs(YAP_RESET, stderr);
+
+  size_t offset = level_length;
+
+  /* The timestamp is the next bracketed field. Keep it muted grey. */
+  if (offset + 1 < length && line[offset] == ' ' &&
+      line[offset + 1] == '[') {
+    size_t timestamp_end = offset + 2;
+
+    while (timestamp_end < length && line[timestamp_end] != ']') {
+      timestamp_end++;
+    }
+
+    if (timestamp_end < length) {
+      timestamp_end++;
+
+      (void)fwrite(line + offset, sizeof(char), 1, stderr);
+      (void)fputs(YAP_GREY, stderr);
+      (void)fwrite(line + offset + 1, sizeof(char),
+                   timestamp_end - offset - 1, stderr);
+      (void)fputs(YAP_RESET, stderr);
+
+      offset = timestamp_end;
+    }
+  }
+
+  /* Message and optional source location use the terminal's normal color. */
+  (void)fwrite(line + offset, sizeof(char), length - offset, stderr);
   (void)fflush(stderr);
 }
