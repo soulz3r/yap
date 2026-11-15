@@ -31,13 +31,17 @@ typedef struct YAP_LOG_STATE {
   bool include_source;
   bool use_colors;
 
-  FILE *filel level);
-  bool yap_log_timestamp(char *buffer, size_t capacity);
-  bool yap_log_format_record(const YAP_LOG_RECORD *record,
-                             bool include_timestamp, bool include_source,
-                             char *buffer, size_t capacity, size_t *written);
+  FILE *file;
+} YAP_LOG_STATE;
 
-  void yap_log_console_write(const char *line, size_t length,
-                             YAP_LOG_LEVEL level, bool use_colors);
+extern YAP_LOG_STATE yap_logger;
 
-  void yap_log_file_write(FILE *file, const char *line, size_t length);
+const char *yap_log_level_name(YAP_LOG_LEVEL level);
+bool yap_log_timestamp(char *buffer, size_t capacity);
+bool yap_log_format_record(const YAP_LOG_RECORD *record,
+                           bool include_timestamp, bool include_source,
+                           char *buffer, size_t capacity, size_t *written);
+
+void yap_log_console_write(const char *line, size_t length,
+                           YAP_LOG_LEVEL level, bool use_colors);
+void yap_log_file_write(FILE *file, const char *line, size_t length);
