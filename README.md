@@ -12,7 +12,7 @@ YAP is being developed as a C-based project setup and maintenance tool. The curr
 
 The intended direction is to keep interfaces separate from the work: a CLI, and eventually a TUI, should collect a request and pass it to reusable core functionality. That end-to-end workflow does not exist yet.
 
-YAP currently targets C23. The supplied build scripts use Clang. Its shared type conventions live in `include/defines.h`: `b` for booleans, `iN`/`uN` for fixed-width integers, `f32`/`f64` for floating-point values, and `st` for `size_t`.
+YAP currently targets C23. The supplied build scripts use Clang. Its shared type conventions live in `include/defines.h`: `v` for `void`, `c` for `char`, `b` for booleans, `iN`/`uN` for fixed-width integers, `f32`/`f64` for floating-point values, and `st` for `size_t`.
 
 ## Current status
 
