@@ -1,33 +1,18 @@
 # YAP
 
-**Yet Another Project** is a small cross-platform project utility written in C.
+**Yet Another Project** is an early-stage C project utility under active development.
 
-YAP is intended to make common project setup and maintenance tasks predictable and repeatable. The long-term design separates the interface from the work: the CLI collects a request, reusable core components perform the operation, and a future TUI can use the same core without duplicating project logic.
+**Current reality:** YAP is not yet a usable project generator. The `new`, `add`, `remove`, `check`, `run`, and `clean` commands are placeholders. The working parts are the CLI dispatcher, help/version output, Linux tree traversal, logger, basic filesystem helpers, and two separate low-level APIs for executing a project plan and rendering template variables.
 
-> **Development status:** YAP is under active development. Several registered commands are placeholders. The project-plan executor and template-variable renderer exist as low-level foundations, but they are not yet connected to `yap new` as a complete project-generation workflow. See [Current status](#current-status).
-
-## Contents
-
-- [Overview](#overview)
-- [Current status](#current-status)
-- [Requirements](#requirements)
-- [Build](#build)
-- [Run](#run)
-- [Commands](#commands)
-- [Project layout](#project-layout)
-- [Core components](#core-components)
-- [Platform support](#platform-support)
-- [Documentation](#documentation)
-- [Development](#development)
-- [License](#license)
+The documentation covers both the code that exists and the architecture being considered. Sections describing a future generator or TUI are design notes, not claims that those features have been implemented. Start with [Current status](#current-status) before treating any command or subsystem as available.
 
 ## Overview
 
-The intended workflow is to describe a project or action, validate that request, resolve the required structure, prepare filesystem operations, execute them, and report a useful result.
+YAP is being developed as a C-based project setup and maintenance tool. The current implementation is a collection of foundations rather than a complete workflow.
 
-The CLI is one interface to this workflow. A future TUI should be another interface to the same functionality. The core should not need to know whether a request came from command-line arguments or an interactive terminal interface.
+The intended direction is to keep interfaces separate from the work: a CLI, and eventually a TUI, should collect a request and pass it to reusable core functionality. That end-to-end workflow does not exist yet.
 
-YAP is written in C and currently targets C23. Clang is used by the supplied build scripts.
+YAP currently targets C23. The supplied build scripts use Clang.
 
 ## Current status
 
@@ -91,10 +76,10 @@ The script discovers all `.c` files under `src/`, creates `bin/`, and builds `bi
 Run from PowerShell or Command Prompt:
 
 ```powershell
-.\build.bat
+.\\build.bat
 ```
 
-The script discovers C files recursively under `src` and creates `bin\yap.exe`.
+The script discovers C files recursively under `src` and creates `bin\\yap.exe`.
 
 ### Compiler flags
 
@@ -112,7 +97,7 @@ PowerShell example:
 
 ```powershell
 $env:compilerFlags = "-Wextra -Wpedantic"
-.\build.bat
+.\\build.bat
 Remove-Item Env:compilerFlags
 ```
 
@@ -131,9 +116,9 @@ Linux:
 Windows:
 
 ```powershell
-.\bin\yap.exe --help
-.\bin\yap.exe --version
-.\bin\yap.exe tree
+.\\bin\\yap.exe --help
+.\\bin\\yap.exe --version
+.\\bin\\yap.exe tree
 ```
 
 YAP expects a command as the first argument. Running it without a command prints a usage hint and returns a nonzero status.
