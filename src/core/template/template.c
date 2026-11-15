@@ -1,6 +1,7 @@
 #include "core/template/template.h"
 
 #include <ctype.h>
+#include <stdbool.h>
 #include <string.h>
 
 static bool yap_template_append(char *output, size_t capacity, size_t *used,
@@ -45,6 +46,7 @@ YAP_TEMPLATE_STATUS yap_template_render(const char *source,
   }
 
   size_t used = 0;
+  *written = 0;
   output[0] = '\0';
 
   const char *cursor = source;
