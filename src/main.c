@@ -4,7 +4,15 @@
 #include "cli/yap_cli.h"
 #include "core/logger/logger.h"
 
+#if defined(YAP_PLATFORM_WINDOWS)
+#include <windows.h>
+#endif
+
 int main(int argc, char **argv) {
+#if defined(YAP_PLATFORM_WINDOWS)
+  SetConsoleOutputCP(CP_UTF8);
+#endif
+
   YAP_LOG_CONFIG config = yap_log_config_default();
 
   if (!yap_log_init(&config)) {
