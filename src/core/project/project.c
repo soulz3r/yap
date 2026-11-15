@@ -3,6 +3,7 @@
 #include "core/project/project_internal.h"
 #include "core/utils/make_fd.h"
 
+#include <stdint.h>
 #include <stdio.h>
 
 #define YAP_PROJECT_PATH_CAPACITY 4096
