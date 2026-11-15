@@ -4,6 +4,7 @@
 #include "cli/cli_core.h"
 #include "cli/help.h"
 #include "cli/yap_cli.h"
+#include "core/logger/logger.h"
 
 static const struct command commands[] = {
     {"new", cli_new},     {"add", cli_add},   {"remove", cli_remove},
@@ -15,6 +16,7 @@ i32 yap_cli(int argc, char *argv[]) {
 
   // quit if no sub-commands
   if (argc < 2) {
+    YAP_LOG_WARN("CLI", "No command was supplied");
     fprintf(stderr,
             "'yap' needs a command.\n"
             "Use 'yap --help' or 'yap -h' to see available commands.\n");
@@ -22,6 +24,7 @@ i32 yap_cli(int argc, char *argv[]) {
   }
 
   const char *name = argv[1];
+  YAP_LOG_INFO("CLI", "Received command: %s", name);
 
   // global options.
   if (strcmp(name, "--version") == 0 || strcmp(name, "-v") == 0) {
@@ -37,10 +40,12 @@ i32 yap_cli(int argc, char *argv[]) {
   // dispacher
   for (size_t i = 0; i < sizeof(commands) / sizeof(commands[0]); i++) {
     if (strcmp(name, commands[i].name) == 0) {
+      YAP_LOG_INFO("CLI", "Executing command: %s", name);
       return commands[i].cmd_func(argc - 1, argv + 1);
     }
   }
 
+  YAP_LOG_WARN("CLI", "Unknown command: %s", name);
   fprintf(stderr, "Unknown command: %s\n", name);
   fprintf(stderr, "Run 'yap --help' for usage.\n");
   return 1;
