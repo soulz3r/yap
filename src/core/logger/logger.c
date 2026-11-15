@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 
-yap_logger_state yap_logger = {0};
+YAP_LOG_STATE yap_logger = {0};
 
 /* Use the safer Microsoft CRT function on Windows, while keeping POSIX builds portable. */
 static FILE *yap_log_open_file(const char *path, const char *mode) {
@@ -22,11 +22,11 @@ static FILE *yap_log_open_file(const char *path, const char *mode) {
 #endif
 }
 
-static bool yap_log_level_valid(yap_log_level level) {
+static bool YAP_LOG_LEVEL_valid(YAP_LOG_LEVEL level) {
     return level >= YAP_LOG_FATAL && level <= YAP_LOG_TRACE;
 }
 
-const char *yap_log_level_name(yap_log_level level) {
+const char *YAP_LOG_LEVEL_name(YAP_LOG_LEVEL level) {
     switch (level) {
         case YAP_LOG_FATAL: return "FATAL";
         case YAP_LOG_ERROR: return "ERROR";
@@ -38,8 +38,8 @@ const char *yap_log_level_name(yap_log_level level) {
     }
 }
 
-yap_log_config yap_log_config_default(void) {
-    return (yap_log_config){
+YAP_LOG_CONFIG YAP_LOG_CONFIG_default(void) {
+    return (YAP_LOG_CONFIG){
         .min_level = YAP_LOG_INFO,
         .console_enabled = true,
         .file_enabled = false,
@@ -50,8 +50,8 @@ yap_log_config yap_log_config_default(void) {
     };
 }
 
-bool yap_log_init(const yap_log_config *config) {
-    if (config == NULL || !yap_log_level_valid(config->min_level)) {
+bool yap_log_init(const YAP_LOG_CONFIG *config) {
+    if (config == NULL || !YAP_LOG_LEVEL_valid(config->min_level)) {
         return false;
     }
 
@@ -76,7 +76,7 @@ bool yap_log_init(const yap_log_config *config) {
 
     yap_log_shutdown();
 
-    yap_logger = (yap_logger_state){
+    yap_logger = (YAP_LOG_STATE){
         .initialized = true,
         .min_level = config->min_level,
         .console_enabled = config->console_enabled,
@@ -96,11 +96,11 @@ void yap_log_shutdown(void) {
         (void)fclose(yap_logger.file);
     }
 
-    yap_logger = (yap_logger_state){0};
+    yap_logger = (YAP_LOG_STATE){0};
 }
 
-bool yap_log_set_level(yap_log_level level) {
-    if (!yap_logger.initialized || !yap_log_level_valid(level)) {
+bool yap_log_set_level(YAP_LOG_LEVEL level) {
+    if (!yap_logger.initialized || !YAP_LOG_LEVEL_valid(level)) {
         return false;
     }
 
@@ -108,14 +108,14 @@ bool yap_log_set_level(yap_log_level level) {
     return true;
 }
 
-bool yap_log_is_enabled(yap_log_level level) {
+bool yap_log_is_enabled(YAP_LOG_LEVEL level) {
     return yap_logger.initialized &&
-           yap_log_level_valid(level) &&
+           YAP_LOG_LEVEL_valid(level) &&
            level <= yap_logger.min_level;
 }
 
 void yap_log_write(
-    yap_log_level level,
+    YAP_LOG_LEVEL level,
     const char *module,
     const char *file,
     int line,
@@ -127,7 +127,7 @@ void yap_log_write(
         return;
     }
 
-    yap_log_record record = {
+    YAP_LOG_RECORD record = {
         .level = level,
         .module = (module != NULL && module[0] != '\0') ? module : "APP",
         .file = file,
