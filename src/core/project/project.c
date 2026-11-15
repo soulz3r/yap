@@ -13,15 +13,15 @@
 
 #define YAP_PROJECT_PATH_CAPACITY 4096
 
-static b yap_project_build_path(const char *root, const char *relative_path,
-                                   char *buffer, st capacity) {
+static b yap_project_build_path(const c *root, const c *relative_path,
+                                   c *buffer, st capacity) {
   const i32 length = snprintf(buffer, capacity, "%s/%s", root, relative_path);
   return length >= 0 && (st)length < capacity;
 }
 
-static b yap_project_set_executable(const char *path) {
+static b yap_project_set_executable(const c *path) {
 #if YAP_PLATFORM_WINDOWS
-  (void)path;
+  (v)path;
   return true;
 #else
   return chmod(path, S_IRUSR | S_IWUSR | S_IXUSR |
@@ -49,7 +49,7 @@ YAP_PROJECT_RESULT yap_project_generate(const YAP_PROJECT_PLAN *plan) {
     return yap_project_result(YAP_PROJECT_FILESYSTEM_ERROR, 0, SIZE_MAX);
   }
 
-  char path[YAP_PROJECT_PATH_CAPACITY];
+  c path[YAP_PROJECT_PATH_CAPACITY];
   st completed = 0;
 
   for (st i = 0; i < plan->operation_count; ++i) {
