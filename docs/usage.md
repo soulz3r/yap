@@ -83,7 +83,7 @@ Current behavior:
 
 The CLI handler does not currently parse a path argument or filtering options.
 
-### Platform limitation
+### Platform implementation
 
 The Linux implementation is in `src/cli/cli_linux.c`. The Windows implementation in `src/cli/cli_windows.c` uses the Win32 `FindFirstFileA` / `FindNextFileA` APIs to enumerate directory entries. It skips `.`, `..`, and `.git`, sorts names, prints the same tree connectors and totals, and avoids following reparse-point directories such as junctions and symbolic links.
 
