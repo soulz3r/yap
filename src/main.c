@@ -15,7 +15,6 @@ int main(int argc, char **argv) {
   const int result = yap_cli(argc, argv);
 
   if (result != 0) {
-    YAP_LOG_ERROR("APP", "YAP exited with code %d", result);
     fprintf(stderr, "Run " YAP_BLUE "'yap --help'" YAP_RESET YAP_GREY
                     " for usage.\n" YAP_RESET);
   }
