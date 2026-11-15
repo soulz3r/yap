@@ -72,18 +72,13 @@ YAP_PROJECT_RESULT yap_project_generate_default(const char *name) {
   }
 
   char project_identifier[65];
-  char header_guard[65];
 
   for (size_t i = 0; name[i] != '\0'; ++i) {
     const char character = name[i] == '-' ? '_' : name[i];
     project_identifier[i] = character;
-    header_guard[i] = character >= 'a' && character <= 'z'
-                          ? (char)(character - 'a' + 'A')
-                          : character;
   }
 
   project_identifier[strlen(name)] = '\0';
-  header_guard[strlen(name)] = '\0';
 
   char header_filename[80];
   char source_filename[80];
@@ -97,15 +92,12 @@ YAP_PROJECT_RESULT yap_project_generate_default(const char *name) {
       snprintf(source_filename, sizeof(source_filename), "src/%s.c", name);
   const int project_header_length = snprintf(
       project_header, sizeof(project_header),
-      "#ifndef %s_H\n"
-      "#define %s_H\n"
+      "#pragma once\n"
       "\n"
       "#define PROJECT_NAME \"%s\"\n"
       "\n"
-      "void %s(void);\n"
-      "\n"
-      "#endif // %s_H\n",
-      header_guard, header_guard, name, project_identifier, header_guard);
+      "void %s(void);\n",
+      name, project_identifier);
 
   const int main_source_length = snprintf(
       main_source, sizeof(main_source),
