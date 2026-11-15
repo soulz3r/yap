@@ -71,21 +71,21 @@ YAP_PROJECT_RESULT yap_project_generate_default(const char *name) {
     };
   }
 
-  char test_header[512];
-  const int test_header_length = snprintf(
-      test_header, sizeof(test_header),
-      "#ifndef TEST_H\n"
-      "#define TEST_H\n"
+  char project_header[512];
+  const int project_header_length = snprintf(
+      project_header, sizeof(project_header),
+      "#ifndef PROJECTNAME_H\n"
+      "#define PROJECTNAME_H\n"
       "\n"
       "#define PROJECT_NAME \"%s\"\n"
       "\n"
-      "void test(void);\n"
+      "void projectname(void);\n"
       "\n"
-      "#endif // TEST_H\n",
+      "#endif // PROJECTNAME_H\n",
       name);
 
-  if (test_header_length < 0 ||
-      (size_t)test_header_length >= sizeof(test_header)) {
+  if (project_header_length < 0 ||
+      (size_t)project_header_length >= sizeof(project_header)) {
     return (YAP_PROJECT_RESULT){
         .status = YAP_PROJECT_PATH_TOO_LONG,
         .completed_operations = 0,
@@ -94,19 +94,19 @@ YAP_PROJECT_RESULT yap_project_generate_default(const char *name) {
   }
 
   static const char *main_source =
-      "#include \"test.h\"\n"
+      "#include \"projectname.h\"\n"
       "\n"
       "int main(void) {\n"
-      "  test();\n"
+      "  projectname();\n"
       "  return 0;\n"
       "}\n";
 
-  static const char *test_source =
-      "#include \"test.h\"\n"
+  static const char *project_source =
+      "#include \"projectname.h\"\n"
       "\n"
       "#include <stdio.h>\n"
       "\n"
-      "void test(void) {\n"
+      "void projectname(void) {\n"
       "  printf(\"Hello from %s\\n\", PROJECT_NAME);\n"
       "}\n";
 
@@ -206,8 +206,8 @@ YAP_PROJECT_RESULT yap_project_generate_default(const char *name) {
       },
       {
           .type = YAP_PROJECT_WRITE_FILE,
-          .path = "include/test.h",
-          .content = test_header,
+          .path = "include/projectname.h",
+          .content = project_header,
       },
       {
           .type = YAP_PROJECT_WRITE_FILE,
@@ -216,8 +216,8 @@ YAP_PROJECT_RESULT yap_project_generate_default(const char *name) {
       },
       {
           .type = YAP_PROJECT_WRITE_FILE,
-          .path = "src/test.c",
-          .content = test_source,
+          .path = "src/projectname.c",
+          .content = project_source,
       },
       {
           .type = YAP_PROJECT_WRITE_FILE,
