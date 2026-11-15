@@ -33,7 +33,7 @@ i32 cli_new(int argc, char **argv) {
 
   printf("Created project '%s'.\n", project_name);
   printf("  cd %s\n", project_name);
-  printf("  ./build.sh  (Linux)\n");
+  printf("  bash build.sh (Linux)\n");
   printf("  .\\build.bat (Windows)\n");
   return 0;
 }
