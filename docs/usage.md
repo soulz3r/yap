@@ -103,14 +103,16 @@ This creates a new `myproject/` directory in the current working directory:
 ```text
 myproject/
 ├── include/
+│   └── projectname.h
 ├── src/
-│   └── main.c
+│   ├── main.c
+│   └── projectname.c
 ├── build.sh
 ├── build.bat
 └── compile_flags.txt
 ```
 
-The generated starter program prints `Hello, world!`. The build scripts compile C sources under `src/` with Clang in C23 mode and write the executable to `bin/<project-name>` (or `bin/<project-name>.exe` on Windows). The compile flags file supplies the C23 standard and the `include/` and `src/` search paths for clangd.
+The generated `main.c` includes `projectname.h` and calls `projectname()`. The implementation in `src/projectname.c` prints `Hello from myproject` followed by a newline. The project name is inserted into the generated header as `PROJECT_NAME`. The build scripts compile C sources under `src/` with Clang in C23 mode and write the executable to `bin/<project-name>` (or `bin/<project-name>.exe` on Windows). The compile flags file supplies the C23 standard and the `include/` and `src/` search paths for clangd.
 
 The project name must be 1-64 characters, begin with a letter or number, and contain only letters, numbers, underscores, or hyphens. Windows reserved device names are rejected. The destination directory must not already exist; YAP does not overwrite an existing project.
 
