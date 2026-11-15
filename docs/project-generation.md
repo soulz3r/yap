@@ -1,6 +1,6 @@
 # Project-generation foundations
 
-This document describes the project-plan executor and template renderer currently present in YAP. These are low-level foundations. They do not yet form a complete project generator and are not connected to the `new` CLI command.
+This document describes the project-plan executor, template renderer, and the first built-in project template in YAP. The `new` command currently uses the project-plan executor to create the `default` C project. A general template package system is not implemented.
 
 ## Current boundary
 
@@ -9,7 +9,7 @@ Two separate components exist:
 1. The project component executes a list of filesystem operations.
 2. The template component renders text by replacing named variables.
 
-No component currently loads a template package, parses CLI arguments into project configuration, or automatically converts rendered templates into a project plan.
+The built-in `default` template defines a fixed starter layout and is connected to `yap new default <project-name>`. YAP does not yet load external template packages, parse arbitrary project configuration, or automatically convert rendered template files into a project plan.
 
 ## Project plan
 
@@ -61,7 +61,7 @@ Contract:
 
 ### Example plan
 
-This illustrates the current C API. It is not a supported `yap new` command:
+This illustrates how a caller can construct a project plan directly. The `yap new default <project-name>` command uses the same executor with its own built-in operation list:
 
 ```c
 #include "core/project/project.h"
@@ -229,7 +229,7 @@ Template source + variable context
           Filesystem
 ```
 
-The caller currently performs the coordination between rendering and plan construction.
+The caller currently performs the coordination between rendering and plan construction. The built-in default project template does not use the text renderer yet; it supplies its starter file contents directly to the project plan.
 
 ## Intended future workflow
 
@@ -237,7 +237,7 @@ The intended design is to accept a project request from an interface, validate i
 
 The CLI and a future TUI should collect the same request and call the same core workflow. Neither interface should duplicate project-generation logic.
 
-That complete workflow is not implemented yet. There is no stable public project configuration API, template package format, template loader, or integration between `yap new`, the renderer, and the plan executor.
+That complete workflow is not implemented yet. There is no stable public project configuration API, external template package format, or template loader. The current `new` command supports only the built-in `default` template and executes its fixed project plan.
 
 ## Safety considerations
 
