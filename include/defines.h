@@ -1,22 +1,32 @@
 #pragma once
 
-// unsigned int types
-typedef unsigned char u8;
-typedef unsigned short u16;
-typedef unsigned int u32;
-typedef unsigned long long u64;
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
 
-// signed int types
-typedef signed char i8;
-typedef signed short i16;
-typedef signed int i32;
-typedef signed long long i64;
+// Boolean type
+typedef bool b;
 
-// floating point types
+// Unsigned fixed-width integer types
+typedef uint8_t u8;
+typedef uint16_t u16;
+typedef uint32_t u32;
+typedef uint64_t u64;
+
+// Signed fixed-width integer types
+typedef int8_t i8;
+typedef int16_t i16;
+typedef int32_t i32;
+typedef int64_t i64;
+
+// Floating-point types
 typedef float f32;
 typedef double f64;
 
-// platform detection
+// Size type
+typedef size_t st;
+
+// Platform detection
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)
 #define YAP_PLATFORM_WINDOWS 1
 #ifndef _WIN64
@@ -35,6 +45,6 @@ typedef double f64;
 // Catch anything not caught by the above.
 #define YAP_PLATFORM_UNIX 1
 #elif defined(_POSIX_VERSION)
-// Posix
+// POSIX
 #define YAP_PLATFORM_POSIX 1
 #endif
