@@ -10,21 +10,21 @@ typedef enum YAP_PROJECT_OPERATION_TYPE {
 
 typedef struct YAP_PROJECT_OPERATION {
   YAP_PROJECT_OPERATION_TYPE type;
-  const char *path;
-  const char *content;
+  const c *path;
+  const c *content;
   b executable;
 } YAP_PROJECT_OPERATION;
 
 typedef struct YAP_PROJECT_PLAN {
-  const char *root;
+  const c *root;
   const YAP_PROJECT_OPERATION *operations;
   st operation_count;
 } YAP_PROJECT_PLAN;
 
 /* User input shared by every project template. */
 typedef struct YAP_PROJECT_CONFIG {
-  const char *name;
-  const char *template_name;
+  const c *name;
+  const c *template_name;
 } YAP_PROJECT_CONFIG;
 
 typedef enum YAP_PROJECT_STATUS {
@@ -55,4 +55,4 @@ YAP_PROJECT_RESULT yap_project_generate(const YAP_PROJECT_PLAN *plan);
 YAP_PROJECT_RESULT yap_project_create(const YAP_PROJECT_CONFIG *config);
 
 /* Convenience wrapper retained for the existing `new default` command. */
-YAP_PROJECT_RESULT yap_project_generate_default(const char *name);
+YAP_PROJECT_RESULT yap_project_generate_default(const c *name);
