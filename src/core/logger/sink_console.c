@@ -11,7 +11,7 @@ static const char *level_color(yap_log_level level) {
     case YAP_LOG_ERROR:
       return YAP_RED;
     case YAP_LOG_WARN:
-      return YAP_ORANGE;
+      return YAP_YELLOW;
     case YAP_LOG_INFO:
       return YAP_GREEN;
     case YAP_LOG_DEBUG:
@@ -39,6 +39,5 @@ void yap_log_console_write(const char *line, size_t length,
     (void)fputs(YAP_RESET, stderr);
   }
 
-  (void)fputc('\n', stderr);
   (void)fflush(stderr);
 }
