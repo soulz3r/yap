@@ -1,9 +1,11 @@
 #include "logger_internal.h"
 
+#include "defines.h"
+
 #include <stdarg.h>
 #include <stdio.h>
 
-static bool append(char *buffer, size_t capacity, size_t *used,
+static b append(char *buffer, st capacity, st *used,
                    const char *format, ...) {
   if (*used >= capacity) {
     return false;
@@ -11,25 +13,25 @@ static bool append(char *buffer, size_t capacity, size_t *used,
 
   va_list args;
   va_start(args, format);
-  const int count = vsnprintf(buffer + *used, capacity - *used, format, args);
+  const i32 count = vsnprintf(buffer + *used, capacity - *used, format, args);
   va_end(args);
 
-  if (count < 0 || (size_t)count >= capacity - *used) {
+  if (count < 0 || (st)count >= capacity - *used) {
     return false;
   }
 
-  *used += (size_t)count;
+  *used += (st)count;
   return true;
 }
 
-bool yap_log_format_record(const YAP_LOG_RECORD *record, bool include_timestamp,
-                           bool include_source, char *buffer, size_t capacity,
-                           size_t *written) {
+b yap_log_format_record(const YAP_LOG_RECORD *record, b include_timestamp,
+                           b include_source, char *buffer, st capacity,
+                           st *written) {
   if (record == NULL || buffer == NULL || capacity == 0 || written == NULL) {
     return false;
   }
 
-  size_t used = 0;
+  st used = 0;
   buffer[0] = '\0';
 
   if (!append(buffer, capacity, &used, "[%s]",
