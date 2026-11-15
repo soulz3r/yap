@@ -27,7 +27,7 @@ The CLI should parse arguments and communicate the user's request. Reusable core
        CLI or future TUI output
 ```
 
-This is the intended direction, not the current end-to-end implementation. At present, most command handlers are placeholders and the project-plan executor and template renderer are not wired into `yap new`.
+This is the intended direction, not the current end-to-end implementation. At present, most command handlers are placeholders. The `new` command supports one built-in `default` template and uses the project-plan executor; the general template renderer is still independent.
 
 ## Process entry point
 
@@ -77,7 +77,7 @@ bool write_file(const char *path, const char *content);
 
 These helpers do not recursively create missing parent directories.
 
-### Project-plan executor
+### Built-in default template\n\n`src/core/project/default_template.c` defines the initial C project layout used by `yap new default <project-name>`. It validates the project name, prepares the starter source and build files, and passes an ordered operation list to `yap_project_generate()`. It is intentionally limited to one built-in template.\n\n### Project-plan executor
 
 The public API is in `include/core/project/project.h`. A `YAP_PROJECT_PLAN` contains a root directory and an ordered array of operations. Each operation creates a directory or writes a file.
 
