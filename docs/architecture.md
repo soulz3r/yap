@@ -52,7 +52,7 @@ Keep `main()` small. Command parsing belongs in the CLI layer.
 | `src/cli/cli_core.c` | Current command handlers |
 | `src/cli/help.c` | Help and version output |
 | `src/cli/cli_linux.c` | Linux directory-tree implementation |
-| `src/cli/cli_windows.c` | Windows tree implementation; currently unfinished |
+| `src/cli/cli_windows.c` | Windows directory-tree implementation using Win32 file enumeration |
 | `include/cli/colors.h` | ANSI color and style constants |
 
 The dispatch table maps a command string to a function pointer. Each handler receives the command name and remaining arguments through `argc` and `argv`.
@@ -124,7 +124,7 @@ Examples:
 
 - `src/core/utils/make_fd.c` uses `_mkdir()` on Windows and `mkdir()` on Linux.
 - `src/cli/cli_linux.c` contains Linux directory traversal.
-- `src/cli/cli_windows.c` currently contains a stub for tree traversal.
+- `src/cli/cli_windows.c` uses `FindFirstFileA()` and `FindNextFileA()` for Windows directory traversal. It does not recurse into reparse-point directories, preventing junction and symbolic-link cycles.
 
 Fallback macros in `defines.h` do not mean every Unix-like platform is supported.
 
