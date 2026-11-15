@@ -52,7 +52,7 @@ yap help
 yap --help
 ```
 
-The help screen currently describes the basic invocation and global options. It does not yet document the full dispatch table or command-specific options.
+The help screen documents the basic invocation, the implemented `new default` syntax, and global options. It does not yet document every registered command.
 
 ## Version
 
@@ -162,6 +162,7 @@ These examples exercise implemented behavior:
 ```sh
 yap --help
 yap --version
+yap new default myproject
 yap tree
 ```
 
