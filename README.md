@@ -76,10 +76,10 @@ The script discovers all `.c` files under `src/`, creates `bin/`, and builds `bi
 Run from PowerShell or Command Prompt:
 
 ```powershell
-.\\build.bat
+.\build.bat
 ```
 
-The script discovers C files recursively under `src` and creates `bin\\yap.exe`.
+The script discovers C files recursively under `src` and creates `bin\yap.exe`.
 
 ### Compiler flags
 
@@ -97,7 +97,7 @@ PowerShell example:
 
 ```powershell
 $env:compilerFlags = "-Wextra -Wpedantic"
-.\\build.bat
+.\build.bat
 Remove-Item Env:compilerFlags
 ```
 
@@ -116,9 +116,9 @@ Linux:
 Windows:
 
 ```powershell
-.\\bin\\yap.exe --help
-.\\bin\\yap.exe --version
-.\\bin\\yap.exe tree
+.\bin\yap.exe --help
+.\bin\yap.exe --version
+.\bin\yap.exe tree
 ```
 
 YAP expects a command as the first argument. Running it without a command prints a usage hint and returns a nonzero status.
