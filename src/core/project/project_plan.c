@@ -3,15 +3,15 @@
 #include "defines.h"
 
 
-static b yap_project_relative_path_valid(const char *path) {
+static b yap_project_relative_path_valid(const c *path) {
   if (path == NULL || path[0] == '\0' || path[0] == '/' ||
       path[0] == '\\') {
     return false;
   }
 
-  const char *segment = path;
+  const c *segment = path;
 
-  for (const char *cursor = path;; ++cursor) {
+  for (const c *cursor = path;; ++cursor) {
     if (*cursor == '/' || *cursor == '\\' || *cursor == '\0') {
       const st length = (st)(cursor - segment);
 
