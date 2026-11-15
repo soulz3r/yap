@@ -6,7 +6,7 @@
 #include "cli/yap_cli.h"
 #include "core/logger/logger.h"
 
-i32 main(i32 argc, char **argv) {
+i32 main(i32 argc, c **argv) {
   YAP_LOG_CONFIG config = yap_log_config_default();
 
   if (!yap_log_init(&config)) {
