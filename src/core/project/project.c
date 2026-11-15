@@ -2,9 +2,14 @@
 
 #include "core/project/project_internal.h"
 #include "core/utils/make_fd.h"
+#include "defines.h"
 
 #include <stdint.h>
 #include <stdio.h>
+
+#if !YAP_PLATFORM_WINDOWS
+#include <sys/stat.h>
+#endif
 
 #define YAP_PROJECT_PATH_CAPACITY 4096
 
@@ -12,6 +17,17 @@ static bool yap_project_build_path(const char *root, const char *relative_path,
                                    char *buffer, size_t capacity) {
   const int length = snprintf(buffer, capacity, "%s/%s", root, relative_path);
   return length >= 0 && (size_t)length < capacity;
+}
+
+static bool yap_project_set_executable(const char *path) {
+#if YAP_PLATFORM_WINDOWS
+  (void)path;
+  return true;
+#else
+  return chmod(path, S_IRUSR | S_IWUSR | S_IXUSR |
+                         S_IRGRP | S_IXGRP |
+                         S_IROTH | S_IXOTH) == 0;
+#endif
 }
 
 static YAP_PROJECT_RESULT yap_project_result(YAP_PROJECT_STATUS status,
@@ -53,6 +69,10 @@ YAP_PROJECT_RESULT yap_project_generate(const YAP_PROJECT_PLAN *plan) {
 
       case YAP_PROJECT_WRITE_FILE:
         success = write_file(path, operation->content);
+
+        if (success && operation->executable) {
+          success = yap_project_set_executable(path);
+        }
         break;
 
       default:
