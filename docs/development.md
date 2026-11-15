@@ -105,7 +105,7 @@ Current examples:
 
 - `src/core/utils/make_fd.c` uses `_mkdir()` on Windows and `mkdir()` on Linux.
 - `src/cli/cli_linux.c` contains Linux tree traversal.
-- `src/cli/cli_windows.c` currently contains a placeholder for the tree command.
+- `src/cli/cli_windows.c` uses the Win32 file enumeration API for tree traversal and skips reparse-point directories to avoid cycles.
 
 Do not claim cross-platform parity merely because a platform macro exists. Build and exercise the feature on the target platform.
 
