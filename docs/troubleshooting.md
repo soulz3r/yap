@@ -56,6 +56,17 @@ The Windows implementation uses Win32 file enumeration. Check that the current w
 
 The command does not follow junctions or symbolic-link directories. Those entries are displayed, but their targets are not traversed, which prevents directory cycles.
 
+### Tree connectors display as garbled characters on Windows
+
+The Windows tree command temporarily switches the console output code page to UTF-8 while printing and restores the previous code page after flushing `stdout`.
+
+If the connectors still appear corrupted, check the terminal's output encoding and confirm that the terminal supports UTF-8. In PowerShell, inspect the current settings with:
+
+```powershell
+[Console]::OutputEncoding
+chcp
+```
+
 ## Logger problems
 
 ### No log messages appear
