@@ -1,5 +1,27 @@
+#include <stdio.h>
+
 #include "cli/yap_cli.h"
+#include "core/logger/logger.h"
 
 int main(int argc, char **argv) {
-  return yap_cli(argc, argv);
+  yap_log_config config = yap_log_config_default();
+  config.include_source = true;
+
+  if (!yap_log_init(&config)) {
+    fprintf(stderr, "Failed to initialize YAP logger.\n");
+    return 1;
+  }
+
+  YAP_LOG_INFO("APP", "YAP started");
+
+  const int result = yap_cli(argc, argv);
+
+  if (result == 0) {
+    YAP_LOG_INFO("APP", "YAP finished successfully");
+  } else {
+    YAP_LOG_ERROR("APP", "YAP exited with code %d", result);
+  }
+
+  yap_log_shutdown();
+  return result;
 }
