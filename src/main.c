@@ -13,10 +13,6 @@ int main(int argc, char **argv) {
 
   const int result = yap_cli(argc, argv);
 
-  if (result != 0) {
-    YAP_LOG_ERROR("APP", "YAP exited with code %d", result);
-  }
-
   yap_log_shutdown();
   return result;
 }
