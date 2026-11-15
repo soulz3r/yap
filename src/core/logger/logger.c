@@ -1,4 +1,6 @@
 #include "core/logger/logger.h"
+
+#include "defines.h"
 #include "logger_internal.h"
 
 #include <stdarg.h>
@@ -19,7 +21,7 @@ static FILE *yap_log_open_file(const char *path, const char *mode) {
 #endif
 }
 
-static bool yap_log_level_valid(YAP_LOG_LEVEL level) {
+static b yap_log_level_valid(YAP_LOG_LEVEL level) {
   return level >= YAP_LOG_FATAL && level <= YAP_LOG_TRACE;
 }
 
@@ -47,7 +49,7 @@ YAP_LOG_CONFIG yap_log_config_default(void) {
   };
 }
 
-bool yap_log_init(const YAP_LOG_CONFIG *config) {
+b yap_log_init(const YAP_LOG_CONFIG *config) {
   if (config == NULL || !yap_log_level_valid(config->min_level)) {
     return false;
   }
@@ -94,7 +96,7 @@ void yap_log_shutdown(void) {
   yap_logger = (YAP_LOG_STATE){0};
 }
 
-bool yap_log_set_level(YAP_LOG_LEVEL level) {
+b yap_log_set_level(YAP_LOG_LEVEL level) {
   if (!yap_logger.initialized || !yap_log_level_valid(level)) {
     return false;
   }
@@ -103,13 +105,13 @@ bool yap_log_set_level(YAP_LOG_LEVEL level) {
   return true;
 }
 
-bool yap_log_is_enabled(YAP_LOG_LEVEL level) {
+b yap_log_is_enabled(YAP_LOG_LEVEL level) {
   return yap_logger.initialized && yap_log_level_valid(level) &&
          level <= yap_logger.min_level;
 }
 
 void yap_log_write(YAP_LOG_LEVEL level, const char *module, const char *file,
-                   int line, const char *function, const char *format, ...) {
+                   i32 line, const char *function, const char *format, ...) {
   if (!yap_log_is_enabled(level) || format == NULL) {
     return;
   }
@@ -130,22 +132,22 @@ void yap_log_write(YAP_LOG_LEVEL level, const char *module, const char *file,
 
   va_list args;
   va_start(args, format);
-  const int message_length =
+  const i32 message_length =
       vsnprintf(record.message, sizeof(record.message), format, args);
   va_end(args);
 
   if (message_length < 0) {
     (void)snprintf(record.message, sizeof(record.message), "%s",
                    "log message formatting failed");
-  } else if ((size_t)message_length >= sizeof(record.message)) {
+  } else if ((st)message_length >= sizeof(record.message)) {
     static const char marker[] = "...[truncated]";
-    const size_t marker_size = sizeof(marker);
-    const size_t offset = sizeof(record.message) - marker_size;
+    const st marker_size = sizeof(marker);
+    const st offset = sizeof(record.message) - marker_size;
     memcpy(record.message + offset, marker, marker_size);
   }
 
   char line_buffer[YAP_LOG_LINE_CAPACITY];
-  size_t line_length = 0;
+  st line_length = 0;
 
   if (!yap_log_format_record(&record, yap_logger.include_timestamp,
                              yap_logger.include_source, line_buffer,
