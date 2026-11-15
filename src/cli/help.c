@@ -1,11 +1,13 @@
+#include "defines.h"
+
 #include <stdio.h>
 
 #include "cli/colors.h"
 #include "cli/help.h"
 
-void version() { printf("Version: 0.0.1"); }
+v version() { printf("Version: 0.0.1"); }
 
-void help(void) {
+v help(v) {
   printf(YAP_GREEN YAP_BOLD
          "Yet Another Project (YAP)\n" YAP_RESET "\n"
 
