@@ -39,7 +39,7 @@ The dispatcher currently registers:
 | `check` | Check project state/configuration | Placeholder |
 | `run` | Run a project | Placeholder |
 | `clean` | Clean generated build output | Placeholder |
-| `tree` | Print a directory tree | Linux implementation; Windows stub |
+| `tree` | Print a directory tree | Implemented on Linux and Windows |
 | `help` | Print help | Implemented |
 | `version` | Print version | Implemented |
 
@@ -65,7 +65,7 @@ The current version function prints the hard-coded development string `Version: 
 
 ## Tree
 
-On Linux, `tree` prints a directory tree rooted at the current working directory:
+`tree` prints a directory tree rooted at the current working directory on both Linux and Windows:
 
 ```sh
 yap tree
@@ -74,11 +74,11 @@ yap tree
 Current behavior:
 
 - Uses the process working directory as the root.
-- Sorts entries alphabetically.
+- Sorts entries alphabetically. Windows sorting is case-insensitive, with a case-sensitive tie-breaker.
 - Prints directories with a trailing slash.
 - Excludes `.`, `..`, and `.git`.
 - Prints total directory and file counts.
-- Uses ANSI colors for directory and file names.
+- Uses ANSI colors for directory and file names.\n- On Windows, does not recurse into junctions or symbolic-link directories, avoiding directory cycles.
 
 The CLI handler does not currently parse a path argument or filtering options.
 
@@ -145,4 +145,4 @@ yap --version
 yap tree
 ```
 
-The tree example is currently meaningful on Linux only.
+The tree example is implemented on Linux and Windows.
