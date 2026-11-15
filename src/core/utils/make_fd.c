@@ -13,7 +13,7 @@ bool create_dir(const char *dir) {
   return true;
 };
 
-bool yap_fs_create_file(const char *path) {
+bool create_file(const char *path) {
   if (path == NULL || path[0] == '\0') {
     return false;
   }
@@ -29,7 +29,7 @@ bool yap_fs_create_file(const char *path) {
   return true;
 }
 
-bool yap_fs_write_file(const char *path, const char *content) {
+bool write_file(const char *path, const char *content) {
   if (path == NULL || content == NULL) {
     return false;
   }
