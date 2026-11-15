@@ -1,6 +1,6 @@
 # YAP
 
-**Yet Another Project** is an early-stage C project utility under active development.
+**Yet Another Project** is a C-based project setup and maintenance tool.
 
 **Current reality:** YAP is an early-stage project utility. `yap new default <project-name>` creates a starter C project with source/include directories and Linux/Windows build scripts. The `add`, `remove`, `check`, `run`, and `clean` commands remain placeholders. Other working parts include the CLI dispatcher, help/version output, Linux and Windows tree traversal, logger, filesystem helpers, project-plan executor, and template renderer.
 
