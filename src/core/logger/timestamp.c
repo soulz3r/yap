@@ -36,15 +36,9 @@ bool yap_log_timestamp(char *buffer, size_t capacity) {
   }
 #endif
 
-  const int count = snprintf(
-      buffer,
-      capacity,
-      "%02d:%02d:%02d.%03ld",
-      local_time.tm_hour,
-      local_time.tm_min,
-      local_time.tm_sec,
-      now.tv_nsec / 1000000L
-  );
+  const int count =
+      snprintf(buffer, capacity, "%02d:%02d:%02d", local_time.tm_hour,
+               local_time.tm_min, local_time.tm_sec);
 
   return count >= 0 && (size_t)count < capacity;
 }
