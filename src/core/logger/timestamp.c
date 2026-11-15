@@ -24,14 +24,14 @@ bool yap_log_timestamp(char *buffer, size_t capacity) {
   }
 #endif
 
-  struct tm utc_time;
+  struct tm local_time;
 
 #if YAP_PLATFORM_WINDOWS
-  if (gmtime_s(&utc_time, &now.tv_sec) != 0) {
+  if (localtime_s(&local_time, &now.tv_sec) != 0) {
     return false;
   }
 #else
-  if (gmtime_r(&now.tv_sec, &utc_time) == NULL) {
+  if (localtime_r(&now.tv_sec, &local_time) == NULL) {
     return false;
   }
 #endif
@@ -39,13 +39,10 @@ bool yap_log_timestamp(char *buffer, size_t capacity) {
   const int count = snprintf(
       buffer,
       capacity,
-      "%04d-%02d-%02dT%02d:%02d:%02d.%03ldZ",
-      utc_time.tm_year + 1900,
-      utc_time.tm_mon + 1,
-      utc_time.tm_mday,
-      utc_time.tm_hour,
-      utc_time.tm_min,
-      utc_time.tm_sec,
+      "%02d:%02d:%02d.%03ld",
+      local_time.tm_hour,
+      local_time.tm_min,
+      local_time.tm_sec,
       now.tv_nsec / 1000000L
   );
 
