@@ -79,7 +79,7 @@ Current behavior:
 - Excludes `.`, `..`, and `.git`.
 - Prints total directory and file counts.
 - Uses ANSI colors for directory and file names.
-- On Windows, does not recurse into junctions or symbolic-link directories, avoiding directory cycles.\n- On Windows, does not recurse into junctions or symbolic-link directories, avoiding directory cycles.
+- On Windows, does not recurse into junctions or symbolic-link directories, avoiding directory cycles.
 
 The CLI handler does not currently parse a path argument or filtering options.
 
