@@ -9,13 +9,13 @@
 #include "core/logger/logger.h"
 #include "core/project/project.h"
 
-i32 cli_new(i32 argc, char **argv) {
+i32 cli_new(i32 argc, c **argv) {
   if (argc != 3 || strcmp(argv[1], "default") != 0) {
     fprintf(stderr, "Usage: yap new default <project-name>\n");
     return 1;
   }
 
-  const char *project_name = argv[2];
+  const c *project_name = argv[2];
   const YAP_PROJECT_RESULT result =
       yap_project_generate_default(project_name);
 
@@ -40,68 +40,68 @@ i32 cli_new(i32 argc, char **argv) {
   return 0;
 }
 
-i32 cli_add(i32 argc, char **argv) {
+i32 cli_add(i32 argc, c **argv) {
   // TODO: write what add does
-  (void)argc;
-  (void)argv;
+  (v)argc;
+  (v)argv;
   printf("Adding something...\n");
   return 0;
 }
 
-i32 cli_remove(i32 argc, char **argv) {
+i32 cli_remove(i32 argc, c **argv) {
   // TODO: write what remove does
-  (void)argc;
-  (void)argv;
+  (v)argc;
+  (v)argv;
   printf("Removing something\n");
   return 0;
 }
 
-i32 cli_check(i32 argc, char **argv) {
+i32 cli_check(i32 argc, c **argv) {
   // TODO: write what check does
-  (void)argc;
-  (void)argv;
+  (v)argc;
+  (v)argv;
   printf("Checking something\n");
   return 0;
 }
 
-i32 cli_run(i32 argc, char **argv) {
+i32 cli_run(i32 argc, c **argv) {
   // TODO: write what running does
-  (void)argc;
-  (void)argv;
+  (v)argc;
+  (v)argv;
   printf("Running the project\n");
   return 0;
 }
 
-i32 cli_clean(i32 argc, char **argv) {
+i32 cli_clean(i32 argc, c **argv) {
   // TODO: write what clean does
-  (void)argc;
-  (void)argv;
+  (v)argc;
+  (v)argv;
   printf("Cleaning something\n");
   return 0;
 }
 
-i32 cli_tree(i32 argc, char **argv) {
-  (void)argc;
-  (void)argv;
+i32 cli_tree(i32 argc, c **argv) {
+  (v)argc;
+  (v)argv;
 
-  const char *path = ".";
+  const c *path = ".";
   print_tree(path);
 
   return 0;
 }
 
-i32 cli_help(i32 argc, char **argv) {
+i32 cli_help(i32 argc, c **argv) {
   // TODO: write what tree command should be
-  (void)argc;
-  (void)argv;
+  (v)argc;
+  (v)argv;
   help();
   return 0;
 }
 
-i32 cli_version(i32 argc, char **argv) {
+i32 cli_version(i32 argc, c **argv) {
   // TODO: write what tree command should be
-  (void)argc;
-  (void)argv;
+  (v)argc;
+  (v)argv;
   version();
   return 0;
 }
