@@ -1,11 +1,12 @@
 #include "core/template/template.h"
 
+#include "defines.h"
+
 #include <ctype.h>
-#include <stdbool.h>
 #include <string.h>
 
-static bool yap_template_append(char *output, size_t capacity, size_t *used,
-                                const char *text, size_t length) {
+static b yap_template_append(char *output, st capacity, st *used,
+                                const char *text, st length) {
   if (length > capacity - 1 - *used) {
     return false;
   }
@@ -17,12 +18,12 @@ static bool yap_template_append(char *output, size_t capacity, size_t *used,
 }
 
 static const char *yap_template_find_variable(
-    const YAP_TEMPLATE_CONTEXT *context, const char *name, size_t name_length) {
+    const YAP_TEMPLATE_CONTEXT *context, const char *name, st name_length) {
   if (context == NULL) {
     return NULL;
   }
 
-  for (size_t i = 0; i < context->variable_count; ++i) {
+  for (st i = 0; i < context->variable_count; ++i) {
     const YAP_TEMPLATE_VARIABLE *variable = &context->variables[i];
 
     if (variable->name != NULL &&
@@ -37,15 +38,15 @@ static const char *yap_template_find_variable(
 
 YAP_TEMPLATE_STATUS yap_template_render(const char *source,
                                          const YAP_TEMPLATE_CONTEXT *context,
-                                         char *output, size_t capacity,
-                                         size_t *written) {
+                                         char *output, st capacity,
+                                         st *written) {
   if (source == NULL || output == NULL || capacity == 0 || written == NULL ||
       (context != NULL && context->variable_count > 0 &&
        context->variables == NULL)) {
     return YAP_TEMPLATE_INVALID_ARGUMENT;
   }
 
-  size_t used = 0;
+  st used = 0;
   *written = 0;
   output[0] = '\0';
 
@@ -74,13 +75,13 @@ YAP_TEMPLATE_STATUS yap_template_render(const char *source,
 
       const char *value =
           yap_template_find_variable(context, expression,
-                                     (size_t)(end - expression));
+                                     (st)(end - expression));
 
       if (value == NULL) {
         return YAP_TEMPLATE_UNKNOWN_VARIABLE;
       }
 
-      const size_t value_length = strlen(value);
+      const st value_length = strlen(value);
       if (!yap_template_append(output, capacity, &used, value,
                                value_length)) {
         return YAP_TEMPLATE_BUFFER_TOO_SMALL;
