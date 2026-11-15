@@ -26,7 +26,7 @@ typedef struct YAP_LOG_CONFIG {
   b file_enabled;
 
   /* Required when file_enabled is true. The file is opened in append mode. */
-  const char *file_path;
+  const c *file_path;
 
   b include_timestamp;
   b include_source;
@@ -34,7 +34,7 @@ typedef struct YAP_LOG_CONFIG {
 } YAP_LOG_CONFIG;
 
 /* Returns sensible defaults: INFO level, console enabled, file disabled. */
-YAP_LOG_CONFIG yap_log_config_default(void);
+YAP_LOG_CONFIG yap_log_config_default(v);
 
 /*
  * Initializes the process-wide logger.
@@ -44,7 +44,7 @@ YAP_LOG_CONFIG yap_log_config_default(void);
 b yap_log_init(const YAP_LOG_CONFIG *config);
 
 /* Flushes and closes owned resources. Safe to call when not initialized. */
-void yap_log_shutdown(void);
+v yap_log_shutdown(v);
 
 /* Changes the runtime threshold. Returns false if the logger is not initialized
  * or level is outside the YAP_LOG_LEVEL range.
@@ -58,8 +58,8 @@ b yap_log_is_enabled(YAP_LOG_LEVEL level);
  * Implementation entry point used by the public macros.
  * Prefer YAP_LOG_* at call sites so source location is captured automatically.
  */
-void yap_log_write(YAP_LOG_LEVEL level, const char *module, const char *file,
-                   i32 line, const char *function, const char *format, ...);
+v yap_log_write(YAP_LOG_LEVEL level, const c *module, const c *file,
+                   i32 line, const c *function, const c *format, ...);
 
 /*
  * The format string is the first variadic argument, so calls with or without
