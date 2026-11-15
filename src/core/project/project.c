@@ -13,13 +13,13 @@
 
 #define YAP_PROJECT_PATH_CAPACITY 4096
 
-static bool yap_project_build_path(const char *root, const char *relative_path,
-                                   char *buffer, size_t capacity) {
-  const int length = snprintf(buffer, capacity, "%s/%s", root, relative_path);
-  return length >= 0 && (size_t)length < capacity;
+static b yap_project_build_path(const char *root, const char *relative_path,
+                                   char *buffer, st capacity) {
+  const i32 length = snprintf(buffer, capacity, "%s/%s", root, relative_path);
+  return length >= 0 && (st)length < capacity;
 }
 
-static bool yap_project_set_executable(const char *path) {
+static b yap_project_set_executable(const char *path) {
 #if YAP_PLATFORM_WINDOWS
   (void)path;
   return true;
@@ -31,8 +31,8 @@ static bool yap_project_set_executable(const char *path) {
 }
 
 static YAP_PROJECT_RESULT yap_project_result(YAP_PROJECT_STATUS status,
-                                             size_t completed,
-                                             size_t failed) {
+                                             st completed,
+                                             st failed) {
   return (YAP_PROJECT_RESULT){
       .status = status,
       .completed_operations = completed,
@@ -50,9 +50,9 @@ YAP_PROJECT_RESULT yap_project_generate(const YAP_PROJECT_PLAN *plan) {
   }
 
   char path[YAP_PROJECT_PATH_CAPACITY];
-  size_t completed = 0;
+  st completed = 0;
 
-  for (size_t i = 0; i < plan->operation_count; ++i) {
+  for (st i = 0; i < plan->operation_count; ++i) {
     const YAP_PROJECT_OPERATION *operation = &plan->operations[i];
 
     if (!yap_project_build_path(plan->root, operation->path, path,
@@ -60,7 +60,7 @@ YAP_PROJECT_RESULT yap_project_generate(const YAP_PROJECT_PLAN *plan) {
       return yap_project_result(YAP_PROJECT_PATH_TOO_LONG, completed, i);
     }
 
-    bool success = false;
+    b success = false;
 
     switch (operation->type) {
       case YAP_PROJECT_CREATE_DIRECTORY:
