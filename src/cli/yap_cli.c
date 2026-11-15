@@ -24,7 +24,6 @@ i32 yap_cli(int argc, char *argv[]) {
   }
 
   const char *name = argv[1];
-  YAP_LOG_INFO("CLI", "Received command: %s", name);
 
   // global options.
   if (strcmp(name, "--version") == 0 || strcmp(name, "-v") == 0) {
@@ -44,7 +43,7 @@ i32 yap_cli(int argc, char *argv[]) {
     }
   }
 
-  YAP_LOG_WARN("CLI", "Unknown command: %s", name);
-  fprintf(stderr, "Run 'yap --help' for usage.\n");
+  YAP_LOG_WARN("yap", "Unknown command: %s\n", name);
+  YAP_LOG_INFO("Help", "Run 'yap --help' for usage.\n");
   return 1;
 }

@@ -58,12 +58,8 @@ i32 cli_tree(int argc, char **argv) {
   (void)argv;
 
   const char *path = ".";
-  YAP_LOG_INFO("TREE", "Generating directory tree");
-  YAP_LOG_DEBUG("TREE", "Tree root: %s", path);
-
   print_tree(path);
 
-  YAP_LOG_INFO("TREE", "Directory tree command finished");
   return 0;
 }
 
