@@ -78,13 +78,16 @@ Current behavior:
 - Prints directories with a trailing slash.
 - Excludes `.`, `..`, and `.git`.
 - Prints total directory and file counts.
-- Uses ANSI colors for directory and file names.\n- On Windows, does not recurse into junctions or symbolic-link directories, avoiding directory cycles.
+- Uses ANSI colors for directory and file names.
+- On Windows, does not recurse into junctions or symbolic-link directories, avoiding directory cycles.\n- On Windows, does not recurse into junctions or symbolic-link directories, avoiding directory cycles.
 
 The CLI handler does not currently parse a path argument or filtering options.
 
 ### Platform limitation
 
-The Linux implementation is in `src/cli/cli_linux.c`. The Windows implementation in `src/cli/cli_windows.c` is a stub, so equivalent Windows behavior is not available yet.
+The Linux implementation is in `src/cli/cli_linux.c`. The Windows implementation in `src/cli/cli_windows.c` uses the Win32 `FindFirstFileA` / `FindNextFileA` APIs to enumerate directory entries. It skips `.`, `..`, and `.git`, sorts names, prints the same tree connectors and totals, and avoids following reparse-point directories such as junctions and symbolic links.
+
+The command currently always uses the process working directory. It does not accept a path argument or filtering options. If Windows cannot read the root directory, it prints an error containing the Windows error code.
 
 ## New
 
