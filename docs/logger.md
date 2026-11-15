@@ -21,7 +21,7 @@ Initialize the logger before writing records:
 ```c
 #include "core/logger/logger.h"
 
-int main(void) {
+i32 main(void) {
   YAP_LOG_CONFIG config = yap_log_config_default();
 
   if (!yap_log_init(&config)) {
@@ -82,7 +82,7 @@ YAP_LOG_TRACE("TEMPLATE", "Read %zu bytes", length);
 
 Each macro supplies the severity, module, source file, line, function, and format arguments to `yap_log_write()`.
 
-Use a short module label such as `CLI`, `FILESYSTEM`, `PROJECT`, or `TEMPLATE`. Format strings follow printf conventions. Use `%zu` for `size_t` and `%s` for strings.
+Use a short module label such as `CLI`, `FILESYSTEM`, `PROJECT`, or `TEMPLATE`. Format strings follow printf conventions. Use `%zu` for `st` values and `%s` for strings.
 
 ## Configuration
 
