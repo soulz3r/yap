@@ -4,11 +4,11 @@
 
 #include <stdio.h>
 
-void yap_log_file_write(FILE *file, const char *line, st length) {
+v yap_log_file_write(FILE *file, const c *line, st length) {
   if (file == NULL || line == NULL) {
     return;
   }
 
-  (void)fwrite(line, sizeof(char), length, file);
-  (void)fflush(file);
+  (v)fwrite(line, sizeof(c), length, file);
+  (v)fflush(file);
 }
