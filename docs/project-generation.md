@@ -4,10 +4,11 @@ This document describes the project-plan executor, template renderer, and the fi
 
 ## Current boundary
 
-Two separate components exist:
+The project subsystem currently has three related pieces:
 
-1. The project component executes a list of filesystem operations.
-2. The template component renders text by replacing named variables.
+1. The project-plan executor performs an ordered list of filesystem operations.
+2. The built-in default template defines the starter C project layout.
+3. The template renderer replaces named variables in caller-provided text, but is not yet used by the default template.
 
 The built-in `default` template defines a fixed starter layout and is connected to `yap new default <project-name>`. YAP does not yet load external template packages, parse arbitrary project configuration, or automatically convert rendered template files into a project plan.
 
