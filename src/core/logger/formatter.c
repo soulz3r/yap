@@ -22,7 +22,7 @@ static bool append(char *buffer, size_t capacity, size_t *used,
   return true;
 }
 
-bool yap_log_format_record(const yap_log_record *record, bool include_timestamp,
+bool yap_log_format_record(const YAP_LOG_RECORD *record, bool include_timestamp,
                            bool include_source, char *buffer, size_t capacity,
                            size_t *written) {
   if (record == NULL || buffer == NULL || capacity == 0 || written == NULL) {
