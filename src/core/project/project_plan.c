@@ -1,8 +1,9 @@
 #include "core/project/project_internal.h"
 
-#include <stddef.h>
+#include "defines.h"
 
-static bool yap_project_relative_path_valid(const char *path) {
+
+static b yap_project_relative_path_valid(const char *path) {
   if (path == NULL || path[0] == '\0' || path[0] == '/' ||
       path[0] == '\\') {
     return false;
@@ -12,7 +13,7 @@ static bool yap_project_relative_path_valid(const char *path) {
 
   for (const char *cursor = path;; ++cursor) {
     if (*cursor == '/' || *cursor == '\\' || *cursor == '\0') {
-      const size_t length = (size_t)(cursor - segment);
+      const st length = (st)(cursor - segment);
 
       if (length == 0 ||
           (length == 1 && segment[0] == '.') ||
@@ -35,7 +36,7 @@ static bool yap_project_relative_path_valid(const char *path) {
   return true;
 }
 
-bool yap_project_plan_valid(const YAP_PROJECT_PLAN *plan) {
+b yap_project_plan_valid(const YAP_PROJECT_PLAN *plan) {
   if (plan == NULL || plan->root == NULL || plan->root[0] == '\0') {
     return false;
   }
@@ -44,7 +45,7 @@ bool yap_project_plan_valid(const YAP_PROJECT_PLAN *plan) {
     return false;
   }
 
-  for (size_t i = 0; i < plan->operation_count; ++i) {
+  for (st i = 0; i < plan->operation_count; ++i) {
     const YAP_PROJECT_OPERATION *operation = &plan->operations[i];
 
     if (!yap_project_relative_path_valid(operation->path)) {
