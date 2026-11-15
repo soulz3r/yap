@@ -1,14 +1,40 @@
 #include <stdio.h>
+#include <string.h>
 
 #include "cli/cli_core.h"
 #include "cli/help.h"
 #include "cli/tree.h"
+#include "core/logger/logger.h"
+#include "core/project/project.h"
 
 i32 cli_new(int argc, char **argv) {
-  // TODO: write what new does
-  (void)argc;
-  (void)argv;
-  printf("Creating new project...\n");
+  if (argc != 3 || strcmp(argv[1], "default") != 0) {
+    fprintf(stderr, "Usage: yap new default <project-name>\n");
+    return 1;
+  }
+
+  const char *project_name = argv[2];
+  const YAP_PROJECT_RESULT result =
+      yap_project_generate_default(project_name);
+
+  if (result.status != YAP_PROJECT_SUCCESS) {
+    if (result.status == YAP_PROJECT_INVALID_PLAN) {
+      fprintf(stderr,
+              "Invalid project name. Use 1-64 characters: letters, "
+              "numbers, '_' or '-'.\n");
+    } else {
+      fprintf(stderr, "Failed to create project '%s'.\n", project_name);
+    }
+
+    YAP_LOG_ERROR("PROJECT", "Default project generation failed: %s",
+                  project_name);
+    return 1;
+  }
+
+  printf("Created project '%s'.\n", project_name);
+  printf("  cd %s\n", project_name);
+  printf("  ./build.sh  (Linux)\n");
+  printf("  .\\build.bat (Windows)\n");
   return 0;
 }
 
