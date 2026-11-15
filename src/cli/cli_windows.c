@@ -1,9 +1,10 @@
 #if defined(YAP_PLATFORM_WINDOWS)
 
+#include "defines.h"
+
 #include "cli/colors.h"
 #include "cli/tree.h"
 
-#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,15 +13,15 @@
 
 typedef struct tree_entry {
   char *name;
-  bool is_directory;
-  bool is_reparse_point;
+  b is_directory;
+  b is_reparse_point;
 } TREE_ENTRY;
 
-static size_t file_count = 0;
-static size_t dir_count = 0;
+static st file_count = 0;
+static st dir_count = 0;
 
 static char *copy_string(const char *source) {
-  size_t length = strlen(source) + 1;
+  st length = strlen(source) + 1;
   char *copy = malloc(length);
 
   if (copy != NULL) {
@@ -30,16 +31,16 @@ static char *copy_string(const char *source) {
   return copy;
 }
 
-static int compare_entries(const void *a, const void *b) {
+static i32 compare_entries(const void *a, const void *b) {
   const TREE_ENTRY *x = a;
   const TREE_ENTRY *y = b;
 
-  int result = _stricmp(x->name, y->name);
+  i32 result = _stricmp(x->name, y->name);
   return result != 0 ? result : strcmp(x->name, y->name);
 }
 
-static void free_entries(TREE_ENTRY *entries, size_t count) {
-  for (size_t i = 0; i < count; i++) {
+static void free_entries(TREE_ENTRY *entries, st count) {
+  for (st i = 0; i < count; i++) {
     free(entries[i].name);
   }
 
@@ -47,15 +48,15 @@ static void free_entries(TREE_ENTRY *entries, size_t count) {
 }
 
 static char *make_search_path(const char *path) {
-  size_t length = strlen(path);
-  bool has_separator =
+  st length = strlen(path);
+  b has_separator =
       length > 0 && (path[length - 1] == '\\' || path[length - 1] == '/');
 
   if (length > SIZE_MAX - 3) {
     return NULL;
   }
 
-  size_t capacity = length + (has_separator ? 2 : 3);
+  st capacity = length + (has_separator ? 2 : 3);
   char *search_path = malloc(capacity);
 
   if (search_path == NULL) {
@@ -67,9 +68,9 @@ static char *make_search_path(const char *path) {
 }
 
 static char *make_child_path(const char *path, const char *name) {
-  size_t path_length = strlen(path);
-  size_t name_length = strlen(name);
-  bool has_separator =
+  st path_length = strlen(path);
+  st name_length = strlen(name);
+  b has_separator =
       path_length > 0 &&
       (path[path_length - 1] == '\\' || path[path_length - 1] == '/');
 
@@ -77,7 +78,7 @@ static char *make_child_path(const char *path, const char *name) {
     return NULL;
   }
 
-  size_t capacity = path_length + name_length + (has_separator ? 1 : 2);
+  st capacity = path_length + name_length + (has_separator ? 1 : 2);
   char *child_path = malloc(capacity);
 
   if (child_path == NULL) {
@@ -89,8 +90,8 @@ static char *make_child_path(const char *path, const char *name) {
   return child_path;
 }
 
-static bool read_entries(const char *path, TREE_ENTRY **entries_out,
-                         size_t *count_out) {
+static b read_entries(const char *path, TREE_ENTRY **entries_out,
+                         st *count_out) {
   char *search_path = make_search_path(path);
 
   if (search_path == NULL) {
@@ -109,9 +110,9 @@ static bool read_entries(const char *path, TREE_ENTRY **entries_out,
   }
 
   TREE_ENTRY *entries = NULL;
-  size_t count = 0;
-  size_t capacity = 0;
-  bool success = true;
+  st count = 0;
+  st capacity = 0;
+  b success = true;
 
   do {
     const char *name = data.cFileName;
@@ -122,7 +123,7 @@ static bool read_entries(const char *path, TREE_ENTRY **entries_out,
     }
 
     if (count == capacity) {
-      size_t new_capacity = capacity == 0 ? 16 : capacity * 2;
+      st new_capacity = capacity == 0 ? 16 : capacity * 2;
 
       if (new_capacity < capacity ||
           new_capacity > SIZE_MAX / sizeof(*entries)) {
@@ -179,9 +180,9 @@ static bool read_entries(const char *path, TREE_ENTRY **entries_out,
   return true;
 }
 
-static void print_entry(const char *name, bool is_directory, int depth,
-                        const bool *last, bool is_last) {
-  for (int i = 0; i < depth; i++) {
+static void print_entry(const char *name, b is_directory, i32 depth,
+                        const b *last, b is_last) {
+  for (i32 i = 0; i < depth; i++) {
     printf(last[i] ? "    " : YAP_DIM "│   " YAP_RESET);
   }
 
@@ -194,16 +195,16 @@ static void print_entry(const char *name, bool is_directory, int depth,
   }
 }
 
-static void list_directory(const char *path, int depth, bool *last) {
+static void list_directory(const char *path, i32 depth, b *last) {
   TREE_ENTRY *entries = NULL;
-  size_t count = 0;
+  st count = 0;
 
   if (!read_entries(path, &entries, &count)) {
     return;
   }
 
-  for (size_t i = 0; i < count; i++) {
-    bool is_last = i == count - 1;
+  for (st i = 0; i < count; i++) {
+    b is_last = i == count - 1;
     TREE_ENTRY *entry = &entries[i];
 
     print_entry(entry->name, entry->is_directory, depth, last, is_last);
@@ -261,7 +262,7 @@ static void print_tree_utf8(const char *path) {
   file_count = 0;
   dir_count = 0;
 
-  bool last[256] = {false};
+  b last[256] = {false};
 
   printf("%s\n", path);
   list_directory(path, 0, last);
@@ -270,7 +271,7 @@ static void print_tree_utf8(const char *path) {
 
 void print_tree(const char *path) {
   const UINT previous_code_page = GetConsoleOutputCP();
-  const bool restore_code_page =
+  const b restore_code_page =
       previous_code_page != 0 && SetConsoleOutputCP(CP_UTF8) != 0;
 
   print_tree_utf8(path);
