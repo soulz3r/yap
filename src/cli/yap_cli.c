@@ -40,13 +40,11 @@ i32 yap_cli(int argc, char *argv[]) {
   // dispacher
   for (size_t i = 0; i < sizeof(commands) / sizeof(commands[0]); i++) {
     if (strcmp(name, commands[i].name) == 0) {
-      YAP_LOG_INFO("CLI", "Executing command: %s", name);
       return commands[i].cmd_func(argc - 1, argv + 1);
     }
   }
 
   YAP_LOG_WARN("CLI", "Unknown command: %s", name);
-  fprintf(stderr, "Unknown command: %s\n", name);
   fprintf(stderr, "Run 'yap --help' for usage.\n");
   return 1;
 }
