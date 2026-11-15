@@ -12,7 +12,7 @@
  */
 struct command {
   const char *name;
-  int (*cmd_func)(int argc, char *argv[]);
+  i32 (*cmd_func)(i32 argc, char *argv[]);
 };
 
 /**
@@ -24,4 +24,4 @@ struct command {
  * @param argv Array of strings containing the command-line arguments.
  * @return 0 on success, nonzero on failure.
  */
-i32 yap_cli(int argc, char *argv[]);
+i32 yap_cli(i32 argc, char *argv[]);
