@@ -106,6 +106,9 @@ Current examples:
 - `src/core/utils/make_fd.c` uses `_mkdir()` on Windows and `mkdir()` on Linux.
 - `src/cli/cli_linux.c` contains Linux tree traversal.
 - `src/cli/cli_windows.c` uses the Win32 file enumeration API for tree traversal and skips reparse-point directories to avoid cycles.
+- The Windows tree command temporarily selects the UTF-8 console output code page, flushes its output, and restores the previous code page.
+
+Keep platform-specific terminal handling inside the platform-specific CLI implementation rather than adding it to `main.c`.
 
 Do not claim cross-platform parity merely because a platform macro exists. Build and exercise the feature on the target platform.
 
