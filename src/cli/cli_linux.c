@@ -1,3 +1,4 @@
+#if defined(YAP_PLATFORM_LINUX)
 
 #include "cli/colors.h"
 #include "cli/tree.h"
@@ -125,3 +126,4 @@ void print_tree(const char *path) {
 
   print_count();
 }
+#endif /* if defi */
