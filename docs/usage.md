@@ -79,6 +79,7 @@ Current behavior:
 - Excludes `.`, `..`, and `.git`.
 - Prints total directory and file counts.
 - Uses ANSI colors for directory and file names.
+- On Windows, temporarily switches the console output code page to UTF-8 while printing the tree, then flushes output and restores the previous code page.
 - On Windows, does not recurse into junctions or symbolic-link directories, avoiding directory cycles.
 
 The CLI handler does not currently parse a path argument or filtering options.
@@ -87,7 +88,7 @@ The CLI handler does not currently parse a path argument or filtering options.
 
 The Linux implementation is in `src/cli/cli_linux.c`. The Windows implementation in `src/cli/cli_windows.c` uses the Win32 `FindFirstFileA` / `FindNextFileA` APIs to enumerate directory entries. It skips `.`, `..`, and `.git`, sorts names, prints the same tree connectors and totals, and avoids following reparse-point directories such as junctions and symbolic links.
 
-The command currently always uses the process working directory. It does not accept a path argument or filtering options. If Windows cannot read the root directory, it prints an error containing the Windows error code.
+The Windows tree wrapper temporarily calls `SetConsoleOutputCP(CP_UTF8)` when a console output code page is available. It flushes `stdout` before restoring the original code page so buffered tree characters are written using UTF-8. The command still uses the process working directory and does not accept a path argument or filtering options. If Windows cannot read the root directory, it prints an error containing the Windows error code.
 
 ## New
 
