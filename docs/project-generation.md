@@ -260,11 +260,9 @@ The caller currently performs the coordination between rendering and plan constr
 
 ## Intended future workflow
 
-The intended design is to accept a project request from an interface, validate it, resolve a project structure, render required content, build a plan, validate the plan, execute it, and return a structured result.
+The project configuration type and built-in template coordinator now provide the shared core entry point. The current CLI still calls the compatibility wrapper for the default template, while a future TUI can call `yap_project_create()` with the same configuration type.
 
-The CLI and a future TUI should collect the same request and call the same core workflow. Neither interface should duplicate project-generation logic.
-
-That complete workflow is not implemented yet. There is no stable public project configuration API, external template package format, or template loader. The current `new` command supports only the built-in `default` template and executes its fixed project plan.
+The complete workflow is not implemented yet. There is no external template package format or loader, and the default template currently builds its operation list directly rather than using the text renderer. The current `new` command supports only the built-in `default` template.
 
 ## Safety considerations
 
