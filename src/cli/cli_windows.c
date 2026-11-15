@@ -246,11 +246,15 @@ void print_tree(const char *path) {
 
   DWORD attributes = GetFileAttributesA(path);
 
-  if (attributes == INVALID_FILE_ATTRIBUTES ||
-      (attributes & FILE_ATTRIBUTE_DIRECTORY) == 0) {
-    fprintf(stderr, "yap: '%s' is not an accessible directory "
+  if (attributes == INVALID_FILE_ATTRIBUTES) {
+    fprintf(stderr, "yap: cannot access directory '%s' "
                     "(Windows error %lu)\n",
             path, (unsigned long)GetLastError());
+    return;
+  }
+
+  if ((attributes & FILE_ATTRIBUTE_DIRECTORY) == 0) {
+    fprintf(stderr, "yap: '%s' is not a directory\n", path);
     return;
   }
 
